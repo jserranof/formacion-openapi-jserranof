@@ -1,0 +1,23 @@
+**/node_modules
+**/dist
+**/coverage
+**/*.db
+**/.env
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# Ficheros locales de Claude Code y otros agentes
+.claude/settings.local.json
+.claude/worktrees/
+**/CLAUDE.md
+**/CLAUDE.local.md
+**/AGENTS.md
+.mcp.json
+.serena/
+
+# Material docente propio (guiones, generadores, plan, soluciones).
+# No se sube: este repositorio lo ven los alumnos.
+/privado/
+resultado.txt

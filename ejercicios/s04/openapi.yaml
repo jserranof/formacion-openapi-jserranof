@@ -1,0 +1,304 @@
+openapi: 3.1.0
+info:
+  title: API de tareas del curso
+  version: 1.0.0
+  description: Gestiona tareas y proyectos. Todos los errores siguen RFC 9457 (application/problem+json).
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: tareas
+  - name: proyectos
+paths:
+  /salud:
+    get:
+      operationId: comprobarSalud
+      summary: Comprueba que la API está viva
+      description: Úsala para saber si la API responde antes de hacer otras llamadas.
+      responses:
+        "200":
+          description: La API responde
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [estado]
+                properties:
+                  estado: { type: string, enum: [ok] }
+  /tareas:
+    get:
+      operationId: listarTareas
+      tags: [tareas]
+      summary: Lista tareas, con filtros y paginación
+      description: Devuelve las tareas que cumplen los filtros, de diez en diez por defecto. Usa «total» para saber si hay más páginas.
+      parameters:
+        - name: prioridad
+          in: query
+          description: Solo las tareas de esta prioridad
+          schema: { $ref: "#/components/schemas/Prioridad" }
+        - name: completada
+          in: query
+          description: true para las terminadas, false para las pendientes
+          schema: { type: boolean }
+        - name: orden
+          in: query
+          description: Campo por el que ordenar; con «-» delante, de mayor a menor
+          schema:
+            type: string
+            enum: [id, -id, titulo, -titulo, prioridad, -prioridad]
+            default: id
+        - $ref: "#/components/parameters/Pagina"
+        - $ref: "#/components/parameters/Limite"
+      responses:
+        "200":
+          description: Una página de tareas
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaginaTareas" }
+        "400": { $ref: "#/components/responses/PeticionNoValida" }
+    post:
+      operationId: crearTarea
+      tags: [tareas]
+      summary: Crea una tarea
+      description: Crea una tarea nueva. Solo «titulo» es obligatorio; la prioridad es «media» si no se indica.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TareaNueva" }
+            example: { titulo: Preparar la demo, prioridad: alta }
+      responses:
+        "201":
+          description: Tarea creada
+          headers:
+            Location:
+              description: URL de la tarea nueva
+              schema: { type: string, example: /tareas/13 }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Tarea" }
+        "400": { $ref: "#/components/responses/PeticionNoValida" }
+  /tareas/{id}:
+    parameters:
+      - $ref: "#/components/parameters/IdTarea"
+    get:
+      operationId: obtenerTarea
+      tags: [tareas]
+      summary: Obtiene una tarea
+      description: Devuelve una tarea por su id. Si no existe, responde 404.
+      responses:
+        "200":
+          description: La tarea
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Tarea" }
+        "400": { $ref: "#/components/responses/PeticionNoValida" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+    put:
+      operationId: reemplazarTarea
+      tags: [tareas]
+      summary: Reemplaza una tarea entera
+      description: Sustituye todos los campos de la tarea. Para cambiar solo algunos, usa cambiarTarea.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TareaNueva" }
+      responses:
+        "200":
+          description: La tarea reemplazada
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Tarea" }
+        "400": { $ref: "#/components/responses/PeticionNoValida" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+    patch:
+      operationId: cambiarTarea
+      tags: [tareas]
+      summary: Cambia algunos campos de una tarea
+      description: Cambia solo los campos que se mandan; el resto se queda igual. Úsala para marcar una tarea como completada.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CambiosTarea" }
+            example: { completada: true }
+      responses:
+        "200":
+          description: La tarea cambiada
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Tarea" }
+        "400": { $ref: "#/components/responses/PeticionNoValida" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+    delete:
+      operationId: borrarTarea
+      tags: [tareas]
+      summary: Borra una tarea
+      description: Borra la tarea para siempre. No se puede deshacer.
+      responses:
+        "204": { description: Tarea borrada }
+        "400": { $ref: "#/components/responses/PeticionNoValida" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+  /proyectos:
+    get:
+      operationId: listarProyectos
+      tags: [proyectos]
+      summary: Lista los proyectos
+      description: Devuelve todos los proyectos. Úsala para conocer el id de un proyecto antes de consultarlo.
+      responses:
+        "200":
+          description: Todos los proyectos
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/Proyecto" }
+    post:
+      operationId: crearProyecto
+      tags: [proyectos]
+      summary: Crea un proyecto
+      description: Crea un proyecto nuevo. Solo «nombre» es obligatorio.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProyectoNuevo" }
+            example: { nombre: Curso de APIs, descripcion: Material y ejercicios }
+      responses:
+        "201":
+          description: Proyecto creado
+          headers:
+            Location:
+              description: URL del proyecto nuevo
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Proyecto" }
+        "400": { $ref: "#/components/responses/PeticionNoValida" }
+  /proyectos/{id}:
+    get:
+      operationId: obtenerProyecto
+      tags: [proyectos]
+      summary: Obtiene un proyecto
+      description: Devuelve un proyecto por su id. Si no existe, responde 404.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id del proyecto
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: El proyecto
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Proyecto" }
+        "400": { $ref: "#/components/responses/PeticionNoValida" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+components:
+  # Ejercicio 1: securitySchemes (oauth2 con clientCredentials y http bearer), «security» en
+  # la raíz del contrato, y «security: []» en /salud para que siga siendo pública
+  parameters:
+    IdTarea:
+      name: id
+      in: path
+      required: true
+      description: Id de la tarea
+      schema: { type: integer, minimum: 1 }
+    Pagina:
+      name: pagina
+      in: query
+      description: Número de página, desde 1
+      schema: { type: integer, minimum: 1, default: 1 }
+    Limite:
+      name: limite
+      in: query
+      description: Tareas por página, como mucho 100
+      schema: { type: integer, minimum: 1, maximum: 100, default: 10 }
+  schemas:
+    Prioridad:
+      type: string
+      enum: [baja, media, alta]
+      description: Lo urgente que es la tarea
+    Tarea:
+      type: object
+      required: [id, titulo, completada, prioridad]
+      properties:
+        id: { type: integer, description: Lo asigna el servidor, example: 3 }
+        titulo: { type: string, description: Qué hay que hacer, example: Leer el contrato }
+        completada: { type: boolean, description: Si ya está hecha }
+        prioridad: { $ref: "#/components/schemas/Prioridad" }
+        propietario: { type: string, readOnly: true, description: Quién la creó (el «sub» de su token) }
+    TareaNueva:
+      type: object
+      required: [titulo]
+      additionalProperties: false
+      properties:
+        titulo: { type: string, minLength: 1, maxLength: 120, description: Qué hay que hacer }
+        completada: { type: boolean, default: false, description: Si ya está hecha }
+        prioridad: { $ref: "#/components/schemas/Prioridad" }
+    CambiosTarea:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        titulo: { type: string, minLength: 1, maxLength: 120, description: Qué hay que hacer }
+        completada: { type: boolean, description: Si ya está hecha }
+        prioridad: { $ref: "#/components/schemas/Prioridad" }
+    PaginaTareas:
+      type: object
+      required: [items, total, pagina, limite]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Tarea" }
+        total: { type: integer, description: Tareas que cumplen los filtros, en todas las páginas }
+        pagina: { type: integer, description: Página devuelta }
+        limite: { type: integer, description: Tareas por página }
+    Proyecto:
+      type: object
+      required: [id, nombre]
+      properties:
+        id: { type: integer, description: Lo asigna el servidor, example: 1 }
+        nombre: { type: string, description: Nombre corto del proyecto, example: Curso de APIs }
+        descripcion: { type: string, description: Para qué es el proyecto, example: Material y ejercicios }
+    ProyectoNuevo:
+      type: object
+      required: [nombre]
+      additionalProperties: false
+      properties:
+        nombre: { type: string, minLength: 1, maxLength: 80, description: Nombre corto del proyecto }
+        descripcion: { type: string, maxLength: 500, description: Para qué es el proyecto }
+    Problema:
+      type: object
+      description: Error según RFC 9457
+      required: [title, status]
+      properties:
+        type: { type: string, description: Tipo de error; about:blank si no hay uno propio }
+        title: { type: string, description: Resumen del error }
+        status: { type: integer, description: El mismo código HTTP de la respuesta }
+        detail: { type: string, description: Qué ha pasado y cómo corregirlo }
+        requestId: { type: string, description: Dato para buscar la petición en los logs }
+        errors:
+          type: array
+          description: Un elemento por campo que falla
+          items:
+            type: object
+            properties:
+              campo: { type: string }
+              mensaje: { type: string }
+  responses:
+    PeticionNoValida:
+      description: La petición no cumple el contrato
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }
+    NoEncontrado:
+      description: No existe
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }

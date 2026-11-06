@@ -1,0 +1,26 @@
+{
+	"name": "oauth-demo",
+	"version": "1.0.0",
+	"description": "Demo de S4: servidor de autorización de prueba y una API que valida sus tokens",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"autorizacion": "tsx src/servidor-autorizacion.ts",
+		"api": "tsx watch src/api.ts",
+		"typecheck": "tsc --noEmit"
+	},
+	"engines": {
+		"node": ">=22"
+	},
+	"dependencies": {
+		"express": "^5.3.0",
+		"jose": "^6.2.15",
+		"oauth2-mock-server": "^9.3.0"
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.6",
+		"@types/node": "^22.20.5",
+		"tsx": "^4.23.15",
+		"typescript": "^7.0.2"
+	}
+}

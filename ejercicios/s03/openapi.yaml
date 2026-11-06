@@ -1,0 +1,60 @@
+openapi: 3.1.0
+info:
+  title: API de tareas del curso
+  version: 1.0.0
+  description: Gestiona tareas. Todos los errores siguen RFC 9457 (application/problem+json).
+servers:
+  - url: http://localhost:3000
+paths:
+  /salud:
+    get:
+      operationId: comprobarSalud
+      summary: Comprueba que la API está viva
+      description: Úsala para saber si la API responde antes de hacer otras llamadas.
+      responses:
+        "200":
+          description: La API responde
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [estado]
+                properties:
+                  estado: { type: string, enum: [ok] }
+
+  # Ejercicio 1: /tareas (get, post) y /tareas/{id} (get, put, patch, delete)
+  # Ejercicio 4 (reto): /proyectos (get, post) y /proyectos/{id} (get)
+
+components:
+  schemas:
+    # Ejercicio 1: Prioridad, Tarea, TareaNueva, CambiosTarea, PaginaTareas
+
+    Problema:
+      type: object
+      description: Error según RFC 9457
+      required: [title, status]
+      properties:
+        type: { type: string, description: Tipo de error; about:blank si no hay uno propio }
+        title: { type: string, description: Resumen del error }
+        status: { type: integer, description: El mismo código HTTP de la respuesta }
+        detail: { type: string, description: Qué ha pasado y cómo corregirlo }
+        requestId: { type: string, description: Dato para buscar la petición en los logs }
+        errors:
+          type: array
+          description: Un elemento por campo que falla
+          items:
+            type: object
+            properties:
+              campo: { type: string }
+              mensaje: { type: string }
+  responses:
+    PeticionNoValida:
+      description: La petición no cumple el contrato
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }
+    NoEncontrado:
+      description: No existe
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }

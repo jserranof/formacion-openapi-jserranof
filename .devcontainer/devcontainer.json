@@ -1,0 +1,30 @@
+{
+	"name": "Curso APIs REST y OpenAPI",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:24-bookworm",
+	"hostRequirements": {
+		"cpus": 2
+	},
+	"postCreateCommand": "bash .devcontainer/instalar.sh",
+	"forwardPorts": [3000, 9000],
+	"portsAttributes": {
+		"3000": { "label": "API" },
+		"9000": { "label": "Servidor de autorización (S4)" }
+	},
+	"customizations": {
+		"codespaces": {
+			"openFiles": ["ejercicios/README.md"]
+		},
+		"vscode": {
+			"extensions": [
+				"humao.rest-client",
+				"42Crunch.vscode-openapi",
+				"vitest.explorer",
+				"MS-CEINTL.vscode-language-pack-es"
+			],
+			"settings": {
+				"editor.formatOnSave": true,
+				"files.readonlyInclude": { "ejercicios/s*/pruebas/**": true }
+			}
+		}
+	}
+}

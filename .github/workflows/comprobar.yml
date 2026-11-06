@@ -1,0 +1,28 @@
+name: Comprobar ejercicios
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ejercicios
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: ejercicios/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - name: Ejecutar las pruebas
+        run: |
+          set +e
+          npm run -s comprobar > resultado.txt 2>&1
+          codigo=$?
+          cat resultado.txt
+          { echo '## Ejercicios'; echo '```'; cat resultado.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit $codigo

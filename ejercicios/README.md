@@ -1,0 +1,55 @@
+# Ejercicios
+
+Cada sesión tiene sus ejercicios en `sNN/`. Escribes el código en `sNN/src/` y las
+pruebas de `sNN/pruebas/` te dicen si está bien. **Las pruebas no se tocan**: son el
+criterio de hecho.
+
+## Cómo se trabaja
+
+```bash
+# desde ejercicios/
+npm run dev:s01                  # (o dev:s02, dev:s03, dev:s04) arranca tu API en http://localhost:3000 y se reinicia al guardar
+npm run comprobar s01 e01        # comprueba un ejercicio
+npm run comprobar s01            # comprueba toda la sesión
+npm run comprobar                # comprueba todo
+```
+
+`comprobar` no necesita la API encendida: arranca la tuya en memoria para cada prueba.
+
+Así se ve un ejercicio a medias:
+
+```text
+[FALTA] s01 · e01-salud  (1/3)
+        - devuelve JSON
+          usa res.json(), no res.send(): llega 'text/html; charset=utf-8' y se esperaba /application\/json/
+```
+
+Cada línea con `-` es una comprobación que falta, y debajo va una pista. Cuando todo está
+bien:
+
+```text
+[ OK ] s01 · e01-salud  (3/3)
+```
+
+También puedes ver las pruebas en el panel **Testing** de VS Code (el icono del matraz).
+
+## Al terminar cada sesión
+
+```bash
+git add -A && git commit -m "s01: ejercicios" && git push
+```
+
+Al hacer `push`, GitHub vuelve a pasar las pruebas (pestaña **Actions** de tu
+repositorio) y el formador ve cómo vas.
+
+## Sesiones
+
+| Sesión | Ejercicios |
+|---|---|
+| S1 | [`s01/`](s01/README.md): `GET /salud`, listar, obtener uno con 404, y un reto |
+| S2 | [`s02/`](s02/README.md): CRUD, validación con Zod, filtros y paginación, middleware, y un reto con el 500 |
+| S3 | [`s03/`](s03/README.md): el contrato OpenAPI, validar contra él, tus propias pruebas, y un reto contract-first |
+| S4 | [`s04/`](s04/README.md): JWT, permisos y BOLA, ETag, Idempotency-Key, y un servidor MCP para agentes |
+
+Cada sesión parte de la anterior **terminada**: si una sesión no te dio tiempo a acabarla,
+la siguiente empieza igual que para todos.

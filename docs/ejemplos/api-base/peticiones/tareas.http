@@ -1,0 +1,21 @@
+### Extensión REST Client de VS Code: pulsa «Send Request» encima de cada petición
+
+@base = http://localhost:3000
+
+### Salud
+GET {{base}}/salud
+
+### Listar
+GET {{base}}/tareas
+
+### Una
+GET {{base}}/tareas/1
+
+### No existe
+GET {{base}}/tareas/99
+
+### Crear
+POST {{base}}/tareas
+Content-Type: application/json
+
+{ "titulo": "Leer el contrato OpenAPI" }
