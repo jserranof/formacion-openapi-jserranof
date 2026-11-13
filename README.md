@@ -26,4 +26,30 @@ Impartido por Alejandro Muñoz (Julditec).
 
 Cada alumno trabaja en su propia copia del repositorio, abierta en **GitHub Codespaces**:
 VS Code en el navegador con Node, las extensiones y las dependencias ya instaladas. No
-hace falta instalar nada en tu equipo. Ver [puesta en marcha](docs/sesiones/puesta-en-marcha.md).
+hace falta instalar nada en tu equipo.
+
+**Entrar en 3 pasos:**
+
+1. Botón verde **Code** → pestaña **Codespaces** → **Create codespace on main**. La
+   primera vez tarda 2–3 minutos. Los días siguientes, reabre el mismo; no crees otro.
+2. En la terminal: `cd ejercicios && npm run comprobar s01`. Que salgan ejercicios
+   pendientes es lo esperado.
+3. Una sola vez, en <https://github.com/settings/codespaces> (los ajustes de tu
+   cuenta): **Default idle timeout** a 15 minutos. Así no gastas horas gratis con el
+   codespace encendido sin usar.
+
+**Si te han añadido como colaborador** de este repositorio (en vez de tener tu propia
+copia), trabaja siempre en tu rama, nunca en `main`. Créala una sola vez, desde la raíz
+del repositorio:
+
+```bash
+git switch -c alumno/<tu-nombre>
+git push -u origin alumno/<tu-nombre>
+```
+
+Al acabar cada sesión, `git add -A && git commit -m "s01: ejercicios" && git push`: lo
+que no subas se pierde si el codespace se borra. Antes de subir, comprueba con
+`git branch --show-current` que estás en tu rama.
+
+Todos los detalles (cupo gratuito, cómo parar el codespace, trabajar sin Codespaces y
+qué hacer si algo falla) están en la [puesta en marcha](docs/sesiones/puesta-en-marcha.md).
