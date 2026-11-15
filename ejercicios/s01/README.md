@@ -3,7 +3,7 @@
 Todo el código va en `src/app.ts`. Los datos están en `src/datos.ts`. Arranca la API con
 `npm run dev:s01` y pruébala con `curl` o con REST Client mientras trabajas.
 
-## e01 · GET /salud (Bloque 4)
+## e01 · GET /salud (Bloque 3, en directo)
 
 Añade una ruta que diga que la API está viva.
 
@@ -13,7 +13,7 @@ Añade una ruta que diga que la API está viva.
 npm run comprobar s01 e01
 ```
 
-## e02 · Listar las tareas (Bloque 4)
+## e02 · Listar las tareas (Bloque 3)
 
 **Hecho cuando:** `GET /tareas` responde 200 con `{ "items": [ ...todas las tareas... ] }`.
 
@@ -30,7 +30,7 @@ Pista: devuelve un objeto con `items`, no el array suelto. Así podrás añadir 
 
 Pista: `req.params.id` llega como texto.
 
-## e04 · Reto: un segundo recurso (si acabas antes)
+## e04 · Reto: un segundo recurso (Bloque 4, si acabas antes)
 
 **Hecho cuando:**
 

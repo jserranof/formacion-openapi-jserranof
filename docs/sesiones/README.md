@@ -18,9 +18,11 @@ Cada `sNN-slides.md` es el contenido de la presentación, una diapositiva por se
 `##`. Los `.pptx` se generan desde ese markdown, y su versión en PDF está en
 [`docs/material/sesion-NN.pdf`](../material/).
 
-Cada sesión tiene además una **práctica** para repasar en casa
-([`docs/prácticas/practica-NN.pdf`](../prácticas/)) y un **cuestionario** de 10 preguntas
-([`docs/cuestionarios/cuestionario-sesion-NN.pdf`](../cuestionarios/)).
+Cada sesión tiene además una **práctica** de una hora
+([`docs/prácticas/practica-NN.pdf`](../prácticas/)): empiézala en clase si acabas un
+ejercicio antes o si sobra tiempo al final, y termínala en casa. Las dudas que te surjan
+se ven al principio de la sesión siguiente. Y un **cuestionario** de 10 preguntas
+([`docs/cuestionarios/cuestionario-sesion-NN.pdf`](../cuestionarios/)), en el cierre.
 
 Cada `sNN-referencia-rapida.md` recoge, sección a sección (§N), los pasos y el código
 exacto de todo lo que se hace en la sesión. Es lo que se pega en el chat durante la clase.
