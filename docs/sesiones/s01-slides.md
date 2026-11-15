@@ -101,6 +101,7 @@ Cada sesión tiene un documento con **todo el código y los comandos**, numerado
 @diagrama flujo
 Lees el enunciado -> Escribes el código -> npm run comprobar -> OK o una pista!
 
+- Hoy, **nueve ejercicios**: dos o tres por bloque, y en cada bloque un reto para quien vaya rápido
 - Cada sesión tiene su carpeta: `ejercicios/s01`, `s02`…
 - `npm run comprobar` te dice **en español** qué te falta
 - Cada carpeta trae ya **la solución de la sesión anterior**: si un día te pierdes, al siguiente empiezas limpio
@@ -302,12 +303,13 @@ Referencia rápida · §1–§3
 
 ---
 
-## Tu turno 1: explora la API de ejemplo
+## Tu turno 1: explora la API de ejemplo (e01)
 
 Ocho preguntas con `curl -i` o REST Client: qué código vuelve, qué cabeceras,
 qué pasa con lo que no existe, cómo se crea una tarea, dónde está al reiniciar.
+Contesta en `ejercicios/s01/src/respuestas/explorar.ts`.
 
-> **Lo tienes si** contestas las ocho y sabes señalar, en un `curl -i`, la línea de estado, las cabeceras y el cuerpo.
+> **Lo tienes si** `npm run comprobar s01 e01` da `[ OK ]`.
 
 **Si acabas antes:** la API de GitHub. Referencia rápida · §4
 
@@ -460,12 +462,13 @@ Referencia rápida · §7
 
 ---
 
-## Tu turno 2: ¿qué verbo y qué código?
+## Tu turno 2: ¿qué verbo y qué código? (e02)
 
-Diez situaciones con tareas y proyectos. Para cada una: **verbo, ruta y código**.
-La 1, la 3 y la 5, compruébalas con `curl -i` contra la API de ejemplo.
+Diez situaciones con tareas y proyectos. Para cada una: **verbo, ruta y código**,
+en `ejercicios/s01/src/respuestas/verbos.ts`.
+La 1, la 3 y la 5, compruébalas también con `curl -i` contra la API de ejemplo.
 
-> **Lo tienes si** tienes las diez y tres comprobadas en la terminal.
+> **Lo tienes si** `npm run comprobar s01 e02` da `[ OK ]`.
 
 **Si acabas antes:** las rutas de los comentarios de una tarea. Referencia rápida · §8
 
@@ -503,10 +506,10 @@ npm | Instala las librerías y lanza las órdenes del proyecto
 
 1. Para la API de ejemplo (`Ctrl+C`)
 2. `cd ejercicios`
-3. `npm run comprobar s01`
+3. `npm run comprobar s01`: e01 y e02 ya en `[ OK ]`
 4. Cada `[FALTA]`: qué comprobación falla y una pista
 
-![FOTO 5] npm run comprobar s01 con la plantilla: 0 de 4 y pistas en español
+![FOTO 5] npm run comprobar con un ejercicio sin hacer: qué falla y la pista en español
 
 Referencia rápida · §9
 
@@ -607,9 +610,9 @@ Una **aplicación**, una **ruta** y una **función** que recibe `req` y contesta
 ## En el código: GET /salud
 
 1. Quita el `//` del `import` de los datos
-2. Escribe la ruta bajo `// Ejercicio 1`
+2. Escribe la ruta bajo `// Ejercicio 3`
 3. `npm run dev:s01` y `curl -i localhost:3000/salud`
-4. `npm run comprobar s01 e01`
+4. `npm run comprobar s01 e03`
 
 ![FOTO 6] La API de los ejercicios arrancada con npm run dev:s01
 
@@ -619,12 +622,12 @@ Referencia rápida · §12
 
 ## Tu turno 3: listar y tipar
 
-1. **e02:** `GET /tareas` → 200 con `{ "items": [ … ] }`
-2. **El modelo:** `prioridad?: "alta" | "media" | "baja"`, y la tarea 2 en `"alta"`
+1. **e04:** `GET /tareas` → 200 con `{ "items": [ … ] }`
+2. **e05:** `prioridad?: "alta" | "media" | "baja"`, y la tarea 2 en `"alta"`
 
-> **Lo tienes si** `npm run typecheck` sale limpio y `npm run comprobar s01 e02` da `[ OK ]`.
+> **Lo tienes si** `npm run typecheck` sale limpio y `npm run comprobar s01 e04` y `e05` dan `[ OK ]`.
 
-**Si acabas antes:** `GET /tareas?completada=true`. Referencia rápida · §13
+**Si acabas antes, e06:** `GET /tareas?completada=true`. Referencia rápida · §13
 
 ---
 
@@ -659,7 +662,7 @@ En los dos casos **llega texto**, aunque parezca un número.
 2. `t.id === req.params.id` → `TS2367`
 3. `"2"` no es `2`: **`Number(req.params.id)`**
 
-![FOTO 7] comprobar s01 e03 con el error típico: el id como texto y el 404 sin problem+json
+![FOTO 7] comprobar del ejercicio de una tarea con el error típico: el id como texto y el 404 sin problem+json
 
 Referencia rápida · §14
 
@@ -694,11 +697,11 @@ Referencia rápida · §15
 
 @diagrama capas
 GET /salud | ¿Encaja? Contesta y se acaba
-GET /tareas | Si no, la siguiente
-GET /tareas/:id | Y así, de arriba abajo
+GET /tareas/resumen | Si no, la siguiente: antes que /tareas/:id
+GET /tareas/:id | Encaja con cualquier cosa: /tareas/2, /tareas/resumen…
 Manejador final* | Nada encajó: 404 en problem+json
 
-Sin manejador final, Express contesta con **una página HTML**.
+Lo concreto, **antes** que lo genérico. Sin manejador final, Express contesta con **una página HTML**.
 
 ---
 
@@ -716,12 +719,13 @@ Referencia rápida · R4
 
 ## Tu turno 4: una tarea, o 404
 
-**e03, para todos:** `GET /tareas/2` → 200; `GET /tareas/99` → 404 con
-`application/problem+json`, `status` y `title`.
+1. **e07, para todos:** `GET /tareas/2` → 200; `GET /tareas/99` → 404 con `application/problem+json`
+2. **e08, si acabas e07:** `GET /tareas/resumen` → `{ total, completadas, pendientes }`
+3. **e09, reto:** las etiquetas y el manejador final
 
-> **Lo tienes si** `npm run comprobar s01 e03` da `[ OK ] (4/4)`.
+> **Lo tienes si** `npm run comprobar s01 e07` da `[ OK ] (4/4)`.
 
-**Si acabas antes, e04:** las etiquetas y el manejador final. Referencia rápida · §16
+Referencia rápida · §16
 
 ---
 
@@ -729,7 +733,7 @@ Referencia rápida · R4
 
 ![FOTO 2] curl -i a /tareas/99 y /no-existe: 404 con application/problem+json
 
-`npm run comprobar s01` → **4 de 4 ejercicios superados.**
+`npm run comprobar s01` → **9 de 9 ejercicios superados** (o 7 de 9 sin los dos retos).
 
 ---
 

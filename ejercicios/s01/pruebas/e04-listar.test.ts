@@ -3,11 +3,11 @@ import { describe, expect, it } from "vitest";
 import { crearApp } from "../src/app.js";
 import { tareas } from "../src/datos.js";
 
-describe("Ejercicio 2 · GET /tareas", () => {
+describe("Ejercicio 4 · GET /tareas", () => {
 	it("responde 200 con JSON", async () => {
 		const res = await request(crearApp()).get("/tareas");
 		expect(res.status, "GET /tareas debería devolver 200").toBe(200);
-		expect(res.headers["content-type"]).toMatch(/application\/json/);
+		expect(res.headers["content-type"]).toContain("application/json");
 	});
 
 	it("la lista va dentro de «items», no suelta", async () => {

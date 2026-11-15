@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { crearApp } from "../src/app.js";
 import { tareas } from "../src/datos.js";
 
-describe("Ejercicio 3 · GET /tareas/:id", () => {
+describe("Ejercicio 7 · GET /tareas/:id", () => {
 	it("una que existe: 200 con la tarea", async () => {
 		const res = await request(crearApp()).get("/tareas/2");
 		expect(res.status, "GET /tareas/2 debería devolver 200").toBe(200);
@@ -22,7 +22,7 @@ describe("Ejercicio 3 · GET /tareas/:id", () => {
 
 	it("el 404 explica el error con problem+json", async () => {
 		const res = await request(crearApp()).get("/tareas/99");
-		expect(res.headers["content-type"], "usa res.type(\"application/problem+json\")").toMatch(/application\/problem\+json/);
+		expect(res.headers["content-type"], "usa res.type(\"application/problem+json\")").toContain("application/problem+json");
 		expect(res.body).toMatchObject({ status: 404, title: expect.any(String) });
 	});
 });

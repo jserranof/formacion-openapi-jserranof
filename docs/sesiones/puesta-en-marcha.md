@@ -23,7 +23,7 @@ necesitas una cuenta de GitHub y Chrome, Edge o Firefox. Son 5 minutos.
 ```bash
 # desde la raíz del repositorio
 node --version                         # v24.x
-cd ejercicios && npm run comprobar s01 # 0 de 4 ejercicios superados: es lo esperado
+cd ejercicios && npm run comprobar s01 # 0 de 9 ejercicios superados: es lo esperado
 ```
 
 ## §2 · Abrir tu API en el navegador

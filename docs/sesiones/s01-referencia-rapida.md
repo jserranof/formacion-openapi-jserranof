@@ -10,19 +10,19 @@
 | 1 | `docs/ejemplos/api-base` | Arrancar la API de ejemplo |
 | 2 | Terminal | Leer una petición y una respuesta con `curl` |
 | 3 | VS Code | Las mismas peticiones con REST Client |
-| 4 | Terminal | Tu turno 1: explorar la API de ejemplo |
+| 4 | Terminal y `ejercicios` | Tu turno 1 (e01): explorar la API de ejemplo |
 | 5 | Terminal | Crear con `POST`: 201 y `Location` |
 | 6 | Terminal | Seguro e idempotente, en la práctica |
 | 7 | Terminal | El bug del día: «esto devuelve 500, ¿por qué?» |
-| 8 | Chat | Tu turno 2: ¿qué verbo y qué código? |
+| 8 | `ejercicios` | Tu turno 2 (e02): ¿qué verbo y qué código? |
 | 9 | `ejercicios` | Los ejercicios de hoy y `npm run comprobar` |
 | 10 | `ejercicios/s01/src/datos.ts` | TypeScript lo justo: tipos e interfaces |
 | 11 | `ejercicios` | El proyecto: `package.json`, `tsconfig.json` y `tsx watch` |
 | 12 | `ejercicios/s01/src/app.ts` | Express: la primera ruta, `GET /salud` |
-| 13 | `ejercicios` | Tu turno 3: listar las tareas y tipar la prioridad |
+| 13 | `ejercicios` | Tu turno 3 (e04–e06): listar, tipar la prioridad y filtrar |
 | 14 | `ejercicios/s01/src/app.ts` | Parámetros de ruta: `req.params.id` llega como texto |
 | 15 | `ejercicios/s01/src/app.ts` | Un 404 que explica el error: `application/problem+json` |
-| 16 | `ejercicios` | Tu turno 4: una tarea, o 404 (y el reto) |
+| 16 | `ejercicios` | Tu turno 4 (e07–e09): una tarea o 404, el resumen y las etiquetas |
 | 17 | Terminal | Guardar tu trabajo en GitHub |
 | R1–R6 | | Demos de reserva |
 
@@ -127,10 +127,11 @@ Content-Type: application/json
 
 **Comprobar:** «No existe» devuelve `HTTP/1.1 404 Not Found` y «Crear», `HTTP/1.1 201 Created`.
 
-## §4 · Tu turno 1: explorar la API de ejemplo (25 min)
+## §4 · Tu turno 1: explorar la API de ejemplo (25 min) · ejercicio e01
 
-Con la API de §1 arrancada, contesta en un fichero o en el chat. Usa `curl -i` o REST
-Client, lo que prefieras.
+Con la API de §1 arrancada, contesta en el fichero `ejercicios/s01/src/respuestas/explorar.ts`:
+cambia cada `null` por tu respuesta (el editor te propone las opciones válidas). Usa
+`curl -i` o REST Client, lo que prefieras.
 
 1. `GET /tareas`: ¿qué código vuelve? ¿Qué dice la cabecera `Content-Type`?
 2. `GET /tareas/1` y `GET /tareas/99`: ¿qué cambia en la línea de estado, en el
@@ -144,8 +145,17 @@ Client, lo que prefieras.
 8. Abre `/docs` en el navegador (pestaña **Puertos** → icono del globo en el 3000). ¿Qué
    es esa página?
 
-**Hecho cuando** tienes las ocho respuestas y sabes señalar, en una respuesta de `curl -i`,
-la línea de estado, las cabeceras y el cuerpo.
+**Comprobar** (en una tercera terminal; la API de ejemplo puede seguir arrancada):
+
+```bash
+# desde la raíz del repositorio
+cd ejercicios
+npm run comprobar s01 e01
+```
+
+**Hecho cuando** sale `[ OK ] s01 · e01-explorar  (8/8)` y sabes señalar, en una
+respuesta de `curl -i`, la línea de estado, las cabeceras y el cuerpo. Si una respuesta
+está mal, `comprobar` te dice cuál y te da una pista, pero no la solución.
 
 **Si acabas antes:** una API pública de verdad, la de GitHub (sin registrarte):
 
@@ -251,10 +261,15 @@ app.use((err: Error & { status?: number }, _req: Request, res: Response, _next: 
 `{"title":"Petición no válida","status":400}`. Un `5xx` es «se ha roto el servidor»; un
 `4xx`, «revisa lo que has mandado».
 
-## §8 · Tu turno 2: ¿qué verbo y qué código? (25 min)
+## §8 · Tu turno 2: ¿qué verbo y qué código? (25 min) · ejercicio e02
 
-Para cada situación, escribe en el chat **verbo, ruta y código de respuesta**. El
-recurso son las tareas de un equipo (`/tareas`) y sus proyectos (`/proyectos`).
+Para cada situación, rellena **verbo, ruta y código de respuesta** en
+`ejercicios/s01/src/respuestas/verbos.ts`. El recurso son las tareas de un equipo
+(`/tareas`) y sus proyectos (`/proyectos`).
+
+```ts
+completar: { verbo: "…", ruta: "/…", codigo: … },
+```
 
 1. Ver todas las tareas.
 2. Ver la tarea 7, que existe.
@@ -267,8 +282,9 @@ recurso son las tareas de un equipo (`/tareas`) y sus proyectos (`/proyectos`).
 9. Ver las tareas del proyecto 3.
 10. Crear una tarea sin haberte identificado, en una API que lo exige.
 
-**Hecho cuando** tienes las diez y, para tres de ellas (1, 3 y 5), lo has comprobado
-contra la API de §1 con `curl -i`.
+**Hecho cuando** `npm run comprobar s01 e02` (desde `ejercicios`) da `[ OK ]` y, para
+tres de ellas (1, 3 y 5), lo has comprobado contra la API de §1 con `curl -i`. Cuando hay
+más de una respuesta razonable (200 o 204, 400 o 422), se aceptan las dos.
 
 **Si acabas antes:** diseña las rutas (verbo y dirección, sin código) para gestionar
 **comentarios** de una tarea: listarlos, añadir uno, borrar uno. ¿Qué código devolverías
@@ -285,15 +301,24 @@ cd ejercicios
 npm run comprobar s01
 ```
 
-**Comprobar:** termina con `0 de 4 ejercicios superados.` Es lo esperado: los vas a
-resolver hoy. Cada `[FALTA]` dice qué comprobación falla y una pista.
+**Comprobar:** e01 y e02 en `[ OK ]` (si los terminaste) y el resto en `[FALTA]`:
+termina con `2 de 9 ejercicios superados.` Es lo esperado: los demás los vas a resolver
+hoy. Cada `[FALTA]` dice qué comprobación falla y una pista.
 
-| Qué | Dónde |
-|---|---|
-| Enunciados | `ejercicios/s01/README.md` |
-| Tu código | `ejercicios/s01/src/app.ts` |
-| Los datos | `ejercicios/s01/src/datos.ts` |
-| Las pruebas (solo lectura) | `ejercicios/s01/pruebas/` |
+| Ejercicio | Bloque | Dónde | Para quién |
+|---|---|---|---|
+| e01 · Explorar la API | 1 | `src/respuestas/explorar.ts` | Todos |
+| e02 · Verbo y código | 2 | `src/respuestas/verbos.ts` | Todos |
+| e03 · `GET /salud` | 3 | `src/app.ts` | Todos (en directo) |
+| e04 · Listar | 3 | `src/app.ts` | Todos |
+| e05 · Prioridad | 3 | `src/datos.ts` | Todos |
+| e06 · Reto: filtrar | 3 | `src/app.ts` | Si acabas antes |
+| e07 · Una, o 404 | 4 | `src/app.ts` | Todos |
+| e08 · Resumen | 4 | `src/app.ts` | Si acabas e07 |
+| e09 · Reto: etiquetas | 4 | `src/app.ts` | Si acabas antes |
+
+Enunciados en `ejercicios/s01/README.md`; las pruebas, de solo lectura, en
+`ejercicios/s01/pruebas/`.
 
 ## §10 · TypeScript lo justo: tipos e interfaces
 
@@ -372,19 +397,19 @@ export function crearApp() {
 	const app = express();
 	app.use(express.json());
 
-	// Ejercicio 1: GET /salud
+	// Ejercicio 3: GET /salud
 	app.get("/salud", (_req, res) => {
 		res.json({ estado: "ok" });
 	});
 
-	// Ejercicio 2: GET /tareas
+	// Ejercicio 4: GET /tareas
 	// ...
 	return app;
 }
 ```
 
 1. Quita el `//` de la línea del `import` de los datos.
-2. `app.get(ruta, (req, res) => …)`: «cuando llegue un `GET` a esta ruta, ejecuta esto».
+2. Bajo `// Ejercicio 3`, `app.get(ruta, (req, res) => …)`: «cuando llegue un `GET` a esta ruta, ejecuta esto».
 3. `res.json(…)`: responde con JSON y pone el `Content-Type` solo. El código es 200 si no
    dices otro.
 4. `crearApp()` monta la aplicación; `server.ts` la arranca en el puerto. Separadas, las
@@ -400,19 +425,19 @@ npm run dev:s01
 curl -i localhost:3000/salud
 
 # desde ejercicios
-npm run comprobar s01 e01
+npm run comprobar s01 e03
 ```
 
 **Comprobar:** `curl` da `200` con `{"estado":"ok"}` y `comprobar` da
-`[ OK ] s01 · e01-salud  (3/3)`.
+`[ OK ] s01 · e03-salud  (3/3)`.
 
 ## §13 · Tu turno 3: listar las tareas y tipar la prioridad (25 min)
 
 **Para todos:**
 
-1. **e02.** `GET /tareas` responde 200 con `{ "items": [ …todas las tareas… ] }`. Pista:
+1. **e04.** `GET /tareas` responde 200 con `{ "items": [ …todas las tareas… ] }`. Pista:
    un objeto con `items`, no el array suelto.
-2. **El modelo.** En `datos.ts`, añade a `Tarea` un campo opcional
+2. **e05, el modelo.** En `datos.ts`, añade a `Tarea` un campo opcional
    `prioridad?: "alta" | "media" | "baja"` y pon `prioridad: "alta"` a la tarea 2.
    Después prueba `prioridad: "urgente"` y lee el error del `typecheck`.
 
@@ -421,19 +446,21 @@ npm run comprobar s01 e01
 ```bash
 # desde ejercicios
 npm run typecheck              # sin errores (con "alta")
-npm run comprobar s01 e02      # [ OK ] s01 · e02-listar  (3/3)
+npm run comprobar s01 e04      # [ OK ] s01 · e04-listar  (3/3)
+npm run comprobar s01 e05      # [ OK ] s01 · e05-prioridad  (3/3)
 curl localhost:3000/tareas     # la tarea 2 sale con "prioridad":"alta"
 ```
 
-**Si acabas antes:** que `GET /tareas?completada=true` devuelva solo las completadas y
-`?completada=false` solo las pendientes. Sin el parámetro, todas. Pista: `req.query`.
+**Si acabas antes, e06 (reto):** que `GET /tareas?completada=true` devuelva solo las
+completadas y `?completada=false` solo las pendientes. Sin el parámetro, todas. Pista:
+`req.query`, y llega como texto. `npm run comprobar s01 e06`.
 
 ## §14 · Parámetros de ruta: `req.params.id` llega como texto
 
 **Fichero:** `ejercicios/s01/src/app.ts` (dentro de `crearApp`)
 
 ```ts
-// Ejercicio 3: GET /tareas/:id
+// Ejercicio 7: GET /tareas/:id
 app.get("/tareas/:id", (req, res) => {
 	const tarea = tareas.find((t) => t.id === req.params.id);   // ← no compila
 	res.json(tarea);
@@ -484,9 +511,9 @@ Content-Type: application/problem+json; charset=utf-8
 `application/problem+json` es el formato estándar de errores de las APIs HTTP
 (RFC 9457): `title` (qué pasa, corto), `status` (el código) y `detail` (este caso).
 
-## §16 · Tu turno 4: una tarea, o 404 (y el reto) (25 min)
+## §16 · Tu turno 4: una tarea, o 404, el resumen y el reto (25 min)
 
-**Para todos, e03:**
+**Para todos, e07:**
 
 - `GET /tareas/2` responde 200 con la tarea 2.
 - `GET /tareas/99` responde 404 con `Content-Type: application/problem+json` y un cuerpo
@@ -496,17 +523,32 @@ Content-Type: application/problem+json; charset=utf-8
 
 ```bash
 # desde ejercicios
-npm run comprobar s01 e03      # [ OK ] s01 · e03-una  (4/4)
+npm run comprobar s01 e07      # [ OK ] s01 · e07-una  (4/4)
 ```
 
-**Si acabas antes, e04 (reto):** `GET /etiquetas` y `GET /etiquetas/:id` funcionan como
+**Si acabas e07, e08:** `GET /tareas/resumen` responde 200 con
+`{ "total": 3, "completadas": 1, "pendientes": 2 }`, calculado a partir de la lista. Y
+`GET /tareas/2` tiene que seguir funcionando.
+
+```ts
+// ojo: ANTES de app.get("/tareas/:id", …)
+app.get("/tareas/resumen", (_req, res) => {
+	const completadas = tareas.filter((t) => t.completada).length;
+	// …y responde con total, completadas y pendientes
+});
+```
+
+Si la pones después de `/tareas/:id`, Express toma «resumen» por un id y contesta 404.
+`npm run comprobar s01 e08`.
+
+**Si acabas antes, e09 (reto):** `GET /etiquetas` y `GET /etiquetas/:id` funcionan como
 las tareas, y cualquier ruta que no existe responde 404 con `application/problem+json`,
 no con la página HTML de Express. Pista: un `app.use((req, res) => …)` **al final**, justo
 antes de `return app`.
 
 ```bash
 # desde ejercicios
-npm run comprobar s01          # 4 de 4 ejercicios superados.
+npm run comprobar s01          # 9 de 9 ejercicios superados.
 ```
 
 ## §17 · Guardar tu trabajo en GitHub
@@ -572,7 +614,7 @@ valiendo». Sin identificarte, GitHub deja 60 peticiones por hora (`x-ratelimit-
 
 ### R4 · Cómo es una prueba por dentro
 
-**Fichero:** `ejercicios/s01/pruebas/e01-salud.test.ts`
+**Fichero:** `ejercicios/s01/pruebas/e03-salud.test.ts`
 
 ```ts
 it("responde 200", async () => {
@@ -598,7 +640,7 @@ Abre `/docs` en el navegador → `POST /tareas` → **Try it out** → **Execute
 **Comprobar:** Swagger UI hace la misma petición que el `curl` de §5 y enseña el `201`.
 La página sale de `openapi.yaml`: el contrato.
 
-### R6 · Filtrar con `req.query`
+### R6 · Filtrar con `req.query` (la solución de e06)
 
 **Fichero:** `ejercicios/s01/src/app.ts` (en lugar de la ruta de `GET /tareas`)
 
@@ -611,7 +653,7 @@ app.get("/tareas", (req, res) => {
 ```
 
 **Comprobar:** `curl "localhost:3000/tareas?completada=true"` devuelve solo la tarea 1, y
-`npm run comprobar s01 e02` sigue en `[ OK ]`. Las comillas en el `curl` hacen falta: sin
+`npm run comprobar s01 e04` y `e06` dan `[ OK ]`. Las comillas en el `curl` hacen falta: sin
 ellas, la terminal se come el `?`.
 
 ## Si algo falla
@@ -626,6 +668,8 @@ ellas, la terminal se come el `?`.
 | `GET /tareas/2` da 404 aunque existe | Comparas el `id` (número) con `req.params.id` (texto) | `Number(req.params.id)` |
 | `Cannot set headers after they are sent to the client` | Respondes dos veces: falta el `return` después del 404 | `noEncontrado(…); return;` |
 | `POST` devuelve 400 «El campo titulo es obligatorio» aunque lo mandas | Falta la cabecera `Content-Type: application/json` | Añade `-H "Content-Type: application/json"` |
+| e01 o e02: `[FALTA]` y una pista, pero no la respuesta | Es a propósito: son preguntas | Repite la petición que dice la pista y mira la línea de estado o la cabecera |
+| e08: `GET /tareas/resumen` da 404 | `/tareas/resumen` está después de `/tareas/:id` | Muévela antes: Express usa la primera ruta que encaja |
 | `comprobar` dice `[FALTA]` pero en `curl` funciona | La prueba mira algo más: el `Content-Type`, `items`… | Lee la pista que imprime debajo de cada `-` |
 | `No he podido ejecutar las pruebas` | Faltan dependencias | `cd ejercicios && npm ci` |
 | En Windows (local), el `curl` con `-d '{…}'` falla | PowerShell trata las comillas de otra forma | Usa Git Bash, o el codespace |

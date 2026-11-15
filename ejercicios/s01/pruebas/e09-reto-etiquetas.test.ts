@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { crearApp } from "../src/app.js";
 import { etiquetas } from "../src/datos.js";
 
-describe("Ejercicio 4 (reto) · GET /etiquetas y GET /etiquetas/:id", () => {
+describe("Ejercicio 9 (reto) · GET /etiquetas y GET /etiquetas/:id", () => {
 	it("GET /etiquetas devuelve { items } con todas", async () => {
 		const res = await request(crearApp()).get("/etiquetas");
 		expect(res.status).toBe(200);
@@ -19,12 +19,12 @@ describe("Ejercicio 4 (reto) · GET /etiquetas y GET /etiquetas/:id", () => {
 	it("GET /etiquetas/99 devuelve 404 con problem+json", async () => {
 		const res = await request(crearApp()).get("/etiquetas/99");
 		expect(res.status).toBe(404);
-		expect(res.headers["content-type"]).toMatch(/application\/problem\+json/);
+		expect(res.headers["content-type"]).toContain("application/problem+json");
 	});
 
 	it("una ruta que no existe devuelve 404 con problem+json", async () => {
 		const res = await request(crearApp()).get("/no-existe");
 		expect(res.status).toBe(404);
-		expect(res.headers["content-type"], "añade un manejador final con app.use((req, res) => ...)").toMatch(/application\/problem\+json/);
+		expect(res.headers["content-type"], "añade un manejador final con app.use((req, res) => ...)").toContain("application/problem+json");
 	});
 });

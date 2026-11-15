@@ -9,7 +9,7 @@ criterio de hecho.
 ```bash
 # desde ejercicios/
 npm run dev:s01                  # (o dev:s02, dev:s03, dev:s04) arranca tu API en http://localhost:3000 y se reinicia al guardar
-npm run comprobar s01 e01        # comprueba un ejercicio
+npm run comprobar s01 e03        # comprueba un ejercicio
 npm run comprobar s01            # comprueba toda la sesión
 npm run comprobar                # comprueba todo
 ```
@@ -19,7 +19,7 @@ npm run comprobar                # comprueba todo
 Así se ve un ejercicio a medias:
 
 ```text
-[FALTA] s01 · e01-salud  (1/3)
+[FALTA] s01 · e03-salud  (1/3)
         - devuelve JSON
           usa res.json(), no res.send(): llega 'text/html; charset=utf-8' y se esperaba /application\/json/
 ```
@@ -28,7 +28,7 @@ Cada línea con `-` es una comprobación que falta, y debajo va una pista. Cuand
 bien:
 
 ```text
-[ OK ] s01 · e01-salud  (3/3)
+[ OK ] s01 · e03-salud  (3/3)
 ```
 
 También puedes ver las pruebas en el panel **Testing** de VS Code (el icono del matraz).
@@ -46,7 +46,7 @@ repositorio) y el formador ve cómo vas.
 
 | Sesión | Ejercicios |
 |---|---|
-| S1 | [`s01/`](s01/README.md): `GET /salud`, listar, obtener uno con 404, y un reto |
+| S1 | [`s01/`](s01/README.md): explorar una API, verbos y códigos, `GET /salud`, listar, tipar, obtener uno con 404, un resumen y dos retos |
 | S2 | [`s02/`](s02/README.md): CRUD, validación con Zod, filtros y paginación, middleware, y un reto con el 500 |
 | S3 | [`s03/`](s03/README.md): el contrato OpenAPI, validar contra él, tus propias pruebas, y un reto contract-first |
 | S4 | [`s04/`](s04/README.md): JWT, permisos y BOLA, ETag, Idempotency-Key, y un servidor MCP para agentes |

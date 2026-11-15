@@ -40,7 +40,7 @@ if (ficheros.length === 0) {
 function motivo(c: Comprobacion) {
 	const texto = (c.failureMessages[0] ?? "").replace(/\u001b\[[0-9;]*m/g, "");
 	const linea = texto.split("\n").find((l) => l.trim() !== "")?.trim() ?? "";
-	return linea.replace(/^AssertionError: /, "").replace(" // Object.is equality", "").replace(/expected (.+) to (deeply )?(be|equal|match) /, "llega $1 y se esperaba ").replace("greater than or equal to ", "al menos ").replace("greater than ", "más de ").replace(/ to (be )?(defined|truthy)$/, ": falta");
+	return linea.replace(/^AssertionError: /, "").replace(" // Object.is equality", "").replace(/expected (.+) to (deeply )?(be|equal|match|contain) /, "llega $1 y se esperaba ").replace("greater than or equal to ", "al menos ").replace("greater than ", "más de ").replace(/ to (be )?(defined|truthy)$/, ": falta").replace(/: llega false y se esperaba true$/, "");
 }
 
 let superados = 0;

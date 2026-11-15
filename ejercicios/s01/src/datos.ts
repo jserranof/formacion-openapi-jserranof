@@ -1,3 +1,5 @@
+// Ejercicio 5: añade a Tarea el campo opcional prioridad ("alta", "media" o "baja")
+// y pon prioridad "alta" a la tarea 2.
 export interface Tarea {
 	id: number;
 	titulo: string;
