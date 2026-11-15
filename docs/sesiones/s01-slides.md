@@ -126,6 +126,8 @@ Tu copia del repositorio (se guarda en GitHub)
 
 No hay que instalar nada. Ábrelo cada día **desde el mismo sitio**; al terminar, **páralo**.
 
+Lo primero: crea **tu rama**, `alumno/<tu-nombre>`, y trabaja siempre en ella.
+
 Referencia rápida · §0
 
 ---
@@ -760,7 +762,7 @@ Diez preguntas, en el chat o en `docs/cuestionarios/cuestionario-sesion-01.pdf`.
 
 ## Guarda tu trabajo
 
-1. `git branch --show-current`: tu rama
+1. `git branch --show-current`: `alumno/<tu-nombre>`, no `main`
 2. `git add -A` y `git commit -m "s01: ejercicios"`
 3. `git push`
 4. Para el codespace: **Stop**, no lo borres

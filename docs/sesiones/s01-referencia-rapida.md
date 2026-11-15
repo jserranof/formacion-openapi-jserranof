@@ -6,7 +6,7 @@
 
 | § | Dónde | Qué |
 |---|---|---|
-| 0 | Terminal | Comprobar el entorno |
+| 0 | Terminal | Comprobar el entorno y crear tu rama |
 | 1 | `docs/ejemplos/api-base` | Arrancar la API de ejemplo |
 | 2 | Terminal | Leer una petición y una respuesta con `curl` |
 | 3 | VS Code | Las mismas peticiones con REST Client |
@@ -26,7 +26,7 @@
 | 17 | Terminal | Guardar tu trabajo en GitHub |
 | R1–R6 | | Demos de reserva |
 
-## §0 · Comprobar el entorno
+## §0 · Comprobar el entorno y crear tu rama
 
 **Terminal:**
 
@@ -34,11 +34,25 @@
 # desde la raíz del repositorio
 node --version        # v24.x (vale v22.12 o superior)
 npm --version
-git branch --show-current
 ```
 
-**Comprobar:** `node --version` empieza por `v24` o `v22`. Si te han añadido como
-colaborador, la rama es `alumno/<tu-nombre>`, no `main` (ver §17).
+Ahora crea **tu rama personal** y muévete a ella. Cambia `<tu-nombre>` por tu nombre y
+primer apellido, en minúsculas, sin tildes ni espacios (por ejemplo, `alumno/ana-garcia`):
+
+```bash
+# desde la raíz del repositorio
+git switch -c alumno/<tu-nombre>           # crea la rama y te mueve a ella
+git push -u origin alumno/<tu-nombre>      # la sube a GitHub y la deja enlazada
+git branch --show-current                  # alumno/<tu-nombre>
+```
+
+**Comprobar:** `node --version` empieza por `v24` o `v22`, y `git branch --show-current`
+dice `alumno/<tu-nombre>`, no `main`. En GitHub, el desplegable de ramas ya muestra la
+tuya.
+
+La rama se crea **una sola vez**. Si `git switch -c` dice `already exists`, ya la tienes:
+muévete a ella con `git switch alumno/<tu-nombre>`. Los próximos días, comprueba al
+empezar con `git branch --show-current` que sigues en ella.
 
 ## §1 · Arrancar la API de ejemplo
 
@@ -557,7 +571,7 @@ npm run comprobar s01          # 7 de 7 ejercicios superados · retos: 2 de 2.
 
 ```bash
 # desde la raíz del repositorio
-git branch --show-current                  # main en tu copia; alumno/<tu-nombre> si eres colaborador
+git branch --show-current                  # alumno/<tu-nombre>; si dice main, mira abajo
 git add -A
 git commit -m "s01: ejercicios"
 git push
@@ -567,13 +581,9 @@ git push
 commit, en verde aunque te queden ejercicios: es informativa. Su resumen muestra lo
 mismo que `npm run comprobar`, y es lo que ve el formador.
 
-Si eres colaborador y aún no tienes tu rama, créala una vez antes del commit:
-
-```bash
-# desde la raíz del repositorio
-git switch -c alumno/<tu-nombre>
-git push -u origin alumno/<tu-nombre>
-```
+Si `git branch --show-current` dice `main`, no hagas el commit todavía: vuelve a tu rama
+con `git switch alumno/<tu-nombre>` (tus cambios sin guardar viajan contigo), o créala
+como en el §0 si aún no la tienes.
 
 Al terminar: para el codespace (github.com/codespaces → `…` → **Stop codespace**). No lo
 borres: mañana seguimos en el mismo.
