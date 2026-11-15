@@ -733,7 +733,7 @@ Referencia rápida · §16
 
 ![FOTO 2] curl -i a /tareas/99 y /no-existe: 404 con application/problem+json
 
-`npm run comprobar s01` → **9 de 9 ejercicios superados** (o 7 de 9 sin los dos retos).
+`npm run comprobar s01` → **7 de 7 ejercicios superados**, y los retos aparte: `retos: 2 de 2`.
 
 ---
 

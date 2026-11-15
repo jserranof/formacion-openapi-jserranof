@@ -302,7 +302,7 @@ npm run comprobar s01
 ```
 
 **Comprobar:** e01 y e02 en `[ OK ]` (si los terminaste) y el resto en `[FALTA]`:
-termina con `2 de 9 ejercicios superados.` Es lo esperado: los demás los vas a resolver
+termina con `2 de 7 ejercicios superados · retos: 0 de 2.` Es lo esperado: los demás los vas a resolver
 hoy. Cada `[FALTA]` dice qué comprobación falla y una pista.
 
 | Ejercicio | Bloque | Dónde | Para quién |
@@ -548,7 +548,7 @@ antes de `return app`.
 
 ```bash
 # desde ejercicios
-npm run comprobar s01          # 9 de 9 ejercicios superados.
+npm run comprobar s01          # 7 de 7 ejercicios superados · retos: 2 de 2.
 ```
 
 ## §17 · Guardar tu trabajo en GitHub
@@ -564,7 +564,8 @@ git push
 ```
 
 **Comprobar:** en GitHub, pestaña **Actions**, aparece «Comprobar ejercicios» con tu
-commit. En su resumen sale lo mismo que `npm run comprobar`.
+commit, en verde aunque te queden ejercicios: es informativa. Su resumen muestra lo
+mismo que `npm run comprobar`, y es lo que ve el formador.
 
 Si eres colaborador y aún no tienes tu rama, créala una vez antes del commit:
 
@@ -668,6 +669,7 @@ ellas, la terminal se come el `?`.
 | `GET /tareas/2` da 404 aunque existe | Comparas el `id` (número) con `req.params.id` (texto) | `Number(req.params.id)` |
 | `Cannot set headers after they are sent to the client` | Respondes dos veces: falta el `return` después del 404 | `noEncontrado(…); return;` |
 | `POST` devuelve 400 «El campo titulo es obligatorio» aunque lo mandas | Falta la cabecera `Content-Type: application/json` | Añade `-H "Content-Type: application/json"` |
+| Los retos (e06, e09) en `[FALTA]` | Son opcionales: se cuentan aparte y no cuentan como pendientes | Hazlos si acabas antes |
 | e01 o e02: `[FALTA]` y una pista, pero no la respuesta | Es a propósito: son preguntas | Repite la petición que dice la pista y mira la línea de estado o la cabecera |
 | e08: `GET /tareas/resumen` da 404 | `/tareas/resumen` está después de `/tareas/:id` | Muévela antes: Express usa la primera ruta que encaja |
 | `comprobar` dice `[FALTA]` pero en `curl` funciona | La prueba mira algo más: el `Content-Type`, `items`… | Lee la pista que imprime debajo de cada `-` |

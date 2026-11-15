@@ -25,4 +25,7 @@ jobs:
           codigo=$?
           cat resultado.txt
           { echo '## Ejercicios'; echo '```'; cat resultado.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
-          exit $codigo
+          # Informativo: los ejercicios pendientes (de sesiones aún no impartidas, o
+          # los retos) no marcan la ejecución en rojo. Solo falla si las pruebas no
+          # han podido ejecutarse (código 2).
+          if [ "$codigo" -ge 2 ]; then exit $codigo; fi

@@ -20,6 +20,9 @@ npm run comprobar s01          # toda la sesión
 | e08 · El resumen | 4 | `src/app.ts` | Si acabas e07 |
 | e09 · Reto: un segundo recurso | 4 | `src/app.ts` | Si acabas antes |
 
+Los retos (e06 y e09) se cuentan aparte: `npm run comprobar s01` termina con
+`7 de 7 ejercicios superados · retos: 0 de 2.` y eso ya es el día completo.
+
 Para los ejercicios de código, arranca tu API con `npm run dev:s01` y pruébala con
 `curl` o con REST Client mientras trabajas. Los datos están en `src/datos.ts`.
 

@@ -44,11 +44,18 @@ function motivo(c: Comprobacion) {
 }
 
 let superados = 0;
+let retos = 0;
+let retosSuperados = 0;
 for (const f of ficheros.sort((a, b) => a.name.localeCompare(b.name))) {
 	const nombre = relative(process.cwd(), f.name).replace(/\\/g, "/").replace("/pruebas/", " · ").replace(".test.ts", "");
 	const fallos = f.assertionResults.filter((c) => c.status !== "passed");
 	const ok = f.assertionResults.length > 0 && fallos.length === 0;
-	if (ok) superados++;
+	// Los retos («eNN-reto-…») son para quien acaba antes: se cuentan aparte y no hacen fallar
+	const esReto = /\/e\d+-reto-/.test(f.name.replace(/\\/g, "/"));
+	if (esReto) {
+		retos++;
+		if (ok) retosSuperados++;
+	} else if (ok) superados++;
 	console.log(`\n${ok ? "[ OK ]" : "[FALTA]"} ${nombre}  (${f.assertionResults.length - fallos.length}/${f.assertionResults.length})`);
 	if (f.assertionResults.length === 0 && f.message) console.log(`        No compila o no arranca: ${f.message.split("\n")[0]}`);
 	for (const c of fallos) {
@@ -58,5 +65,7 @@ for (const f of ficheros.sort((a, b) => a.name.localeCompare(b.name))) {
 	}
 }
 
-console.log(`\n${superados} de ${ficheros.length} ejercicios superados.`);
-process.exit(superados === ficheros.length ? 0 : 1);
+const obligatorios = ficheros.length - retos;
+const resumenRetos = retos > 0 ? ` · retos: ${retosSuperados} de ${retos}` : "";
+console.log(`\n${superados} de ${obligatorios} ejercicios superados${resumenRetos}.`);
+process.exit(superados === obligatorios ? 0 : 1);
