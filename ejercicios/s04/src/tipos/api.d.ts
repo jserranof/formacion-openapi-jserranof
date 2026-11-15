@@ -171,8 +171,9 @@ export interface components {
             prioridad?: components["schemas"]["Prioridad"];
         };
         PaginaTareas: {
+            /** @description Las tareas de esta página */
             items: components["schemas"]["Tarea"][];
-            /** @description Tareas que cumplen los filtros */
+            /** @description Tareas que cumplen los filtros, en todas las páginas */
             total: number;
             /** @description Página devuelta */
             pagina: number;
@@ -240,6 +241,17 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problema"];
             };
         };
+        /** @description Demasiadas peticiones en un minuto. La cabecera RateLimit dice cuándo volver */
+        DemasiadasPeticiones: {
+            headers: {
+                /** @description Cuántas peticiones quedan y en cuántos segundos se renueva el cupo */
+                RateLimit?: string;
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problema"];
+            };
+        };
     };
     parameters: {
         /** @description Id de la tarea */
@@ -276,6 +288,7 @@ export interface operations {
                     };
                 };
             };
+            429: components["responses"]["DemasiadasPeticiones"];
         };
     };
     listarTareas: {
@@ -301,6 +314,8 @@ export interface operations {
             /** @description Una página de tareas */
             200: {
                 headers: {
+                    /** @description Enlaces a la página siguiente (rel="next") y a la anterior (rel="prev"), si las hay */
+                    Link?: string;
                     [name: string]: unknown;
                 };
                 content: {
@@ -380,6 +395,13 @@ export interface operations {
         };
         requestBody: {
             content: {
+                /**
+                 * @example {
+                 *       "titulo": "Leer el contrato entero",
+                 *       "completada": false,
+                 *       "prioridad": "alta"
+                 *     }
+                 */
                 "application/json": components["schemas"]["TareaNueva"];
             };
         };
@@ -470,10 +492,12 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description Todos los proyectos */
                         items: components["schemas"]["Proyecto"][];
                     };
                 };
             };
+            429: components["responses"]["DemasiadasPeticiones"];
         };
     };
     crearProyecto: {

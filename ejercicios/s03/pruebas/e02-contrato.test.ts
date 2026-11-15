@@ -5,7 +5,7 @@ import { leerContrato, operaciones, resolver } from "./contrato.js";
 const contrato = leerContrato();
 const op = (ruta: string, verbo: string) => contrato.paths?.[ruta]?.[verbo];
 
-describe("Ejercicio 1 · El contrato de /tareas en openapi.yaml", () => {
+describe("Ejercicio 2 · El contrato de /tareas en openapi.yaml", () => {
 	it("es un OpenAPI 3.1 válido", async () => {
 		expect(contrato.openapi, "la primera línea es «openapi: 3.1.0»").toMatch(/^3\.1\./);
 		const r = await new Validator().validate(contrato);

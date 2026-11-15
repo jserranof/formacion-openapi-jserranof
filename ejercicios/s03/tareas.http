@@ -1,0 +1,59 @@
+### Extensión REST Client de VS Code: pulsa «Send Request» encima de cada petición
+### Arranca antes tu API: cd ejercicios && npm run dev:s03
+### Los códigos de los comentarios son los de la API con el e05 hecho
+
+@base = http://localhost:3000
+
+### El contrato, para programas (e04)
+GET {{base}}/openapi.json
+
+### Lo que cumple el contrato: 200
+GET {{base}}/tareas?prioridad=alta&completada=false&limite=5
+
+### Un parámetro que el contrato no declara: 400
+GET {{base}}/tareas?inventado=1
+
+### Un límite fuera de rango (1 a 100): 400
+GET {{base}}/tareas?limite=500
+
+### Un id que no es un número: 400, no 404
+GET {{base}}/tareas/abc
+
+### Un cuerpo que no es JSON: 415
+POST {{base}}/tareas
+Content-Type: text/plain
+
+hola
+
+### Un campo que el contrato no permite: 400 y dice cuál
+POST {{base}}/tareas
+Content-Type: application/json
+
+{"titulo":"Válida","propietario":"otro"}
+
+### Crear según el contrato: 201 y Location
+POST {{base}}/tareas
+Content-Type: application/json
+
+{"titulo":"Preparar la demo","prioridad":"alta"}
+
+### Un PATCH vacío: 400 (minProperties: 1)
+PATCH {{base}}/tareas/3
+Content-Type: application/json
+
+{}
+
+### Una ruta que el contrato no tiene: 404
+GET {{base}}/no-existe
+
+### Proyectos (e11): crear y ver
+POST {{base}}/proyectos
+Content-Type: application/json
+
+{"nombre":"Formación","descripcion":"Cursos del trimestre"}
+
+### Proyectos (e11): sin nombre, 400
+POST {{base}}/proyectos
+Content-Type: application/json
+
+{"descripcion":"Sin nombre"}

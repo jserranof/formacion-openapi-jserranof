@@ -1,0 +1,112 @@
+# Ejercicio 1 · Un contrato para leer (no hay que tocarlo)
+# La API de un restaurante: los platos de la carta y los pedidos de cada mesa.
+# Contesta las preguntas en src/respuestas/contrato.ts.
+openapi: 3.1.0
+info:
+  title: Carta del restaurante
+  version: 1.0.0
+  description: Los platos de la carta y los pedidos de cada mesa. Los errores siguen RFC 9457.
+paths:
+  /platos:
+    get:
+      operationId: listarPlatos
+      summary: Lista los platos de la carta
+      parameters:
+        - name: sinGluten
+          in: query
+          description: true para ver solo los platos sin gluten
+          schema: { type: boolean }
+      responses:
+        "200":
+          description: Los platos de la carta
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Plato" }
+        "400": { $ref: "#/components/responses/PeticionNoValida" }
+  /platos/{id}:
+    get:
+      operationId: obtenerPlato
+      summary: Obtiene un plato
+      parameters:
+        - $ref: "#/components/parameters/IdPlato"
+      responses:
+        "200":
+          description: El plato
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Plato" }
+        "400": { $ref: "#/components/responses/PeticionNoValida" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+  /pedidos:
+    post:
+      operationId: crearPedido
+      summary: Pide platos para una mesa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PedidoNuevo" }
+            example: { mesa: 4, platos: [2, 7], notas: Sin cebolla }
+      responses:
+        "201":
+          description: Pedido creado
+          headers:
+            Location:
+              description: URL del pedido nuevo
+              schema: { type: string, example: /pedidos/58 }
+        "400": { $ref: "#/components/responses/PeticionNoValida" }
+        "409":
+          description: La cocina está cerrada
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/Problema" }
+components:
+  parameters:
+    IdPlato:
+      name: id
+      in: path
+      required: true
+      description: Id del plato
+      schema: { type: integer, minimum: 1 }
+  schemas:
+    Plato:
+      type: object
+      required: [id, nombre, precio]
+      properties:
+        id: { type: integer }
+        nombre: { type: string, example: Croquetas caseras }
+        precio: { type: number, minimum: 0, description: En euros con IVA }
+        alergenos:
+          type: array
+          items: { type: string, enum: [gluten, lactosa, huevo, frutos-secos, marisco] }
+    PedidoNuevo:
+      type: object
+      required: [mesa, platos]
+      additionalProperties: false
+      properties:
+        mesa: { type: integer, minimum: 1, maximum: 30 }
+        platos:
+          type: array
+          minItems: 1
+          items: { type: integer, description: Id de un plato }
+        notas: { type: string, maxLength: 200 }
+    Problema:
+      type: object
+      required: [title, status]
+      properties:
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+  responses:
+    PeticionNoValida:
+      description: La petición no cumple el contrato
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }
+    NoEncontrado:
+      description: No existe
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }

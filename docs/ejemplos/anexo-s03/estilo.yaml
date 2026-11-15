@@ -1,0 +1,80 @@
+# La guía de estilo de contratos del equipo, como reglas de lint (anexo S3, bloque A).
+# Se usa igual que redocly.yaml:   npx tsx lint-estilo.ts <contrato.yaml>
+extends:
+  - recommended
+
+rules:
+  security-defined: off # La seguridad llega en S4
+  no-server-example.com: off # En el curso, el servidor es localhost a propósito
+  info-license: off # API interna del curso: sin licencia pública
+
+  # 1. Nombres: cada operationId empieza por un verbo en infinitivo (listarTareas)
+  rule/operationid-con-verbo:
+    subject:
+      type: Operation
+      property: operationId
+    assertions:
+      pattern: /^[a-z]+(ar|er|ir)[A-Z]/
+    message: El operationId empieza por un verbo en infinitivo, como listarTareas o crearTarea
+    severity: error
+
+  # 2. Para quien no puede preguntar: cada operación dice cuándo usarla
+  rule/description-que-explique:
+    subject:
+      type: Operation
+      property: description
+    assertions:
+      defined: true
+      minLength: 30
+    message: Cada operación lleva una description de 30 caracteres o más que diga cuándo usarla
+    severity: error
+
+  # 3. Rutas en minúsculas, sin verbos ni guiones bajos: /tareas/{id}/comentarios
+  rule/rutas-en-minusculas:
+    subject:
+      type: Paths
+    assertions:
+      pattern: /^(\/([a-z]+|\{[a-zA-Z]+\}))+$/
+    message: Las rutas van en minúsculas, con el recurso en plural y los parámetros entre llaves
+    severity: error
+
+  # 4. Todos los errores, con cuerpo y en problem+json (RFC 9457)
+  rule/errores-con-cuerpo:
+    subject:
+      type: Response
+      property: content
+      filterInParentKeys: ["400", "401", "403", "404", "405", "409", "415", "422", "429", "500"]
+    assertions:
+      defined: true
+    message: Cada error lleva un cuerpo que diga qué ha pasado (application/problem+json)
+    severity: error
+
+  rule/errores-problem-json:
+    subject:
+      type: MediaTypesMap
+    where:
+      - subject:
+          type: Response
+          filterInParentKeys: ["400", "401", "403", "404", "405", "409", "415", "422", "429", "500"]
+        assertions:
+          defined: true
+    assertions:
+      required: ["application/problem+json"]
+    message: Los errores se describen con application/problem+json
+    severity: error
+
+  # 5. Un ejemplo en cada cuerpo que se manda
+  rule/cuerpo-con-ejemplo:
+    subject:
+      type: MediaType
+      property: example
+      filterInParentKeys: ["application/json"]
+    where:
+      - subject:
+          type: RequestBody
+        assertions:
+          defined: true
+    assertions:
+      defined: true
+    message: Cada cuerpo de petición lleva un example
+    severity: warn

@@ -7,7 +7,9 @@ servers:
   - url: http://localhost:3000
 tags:
   - name: tareas
+    description: Lo que hay que hacer, con su prioridad y si ya está hecho
   - name: proyectos
+    description: Agrupan tareas; cada uno con un nombre y una descripción
 paths:
   /salud:
     get:
@@ -24,6 +26,7 @@ paths:
                 required: [estado]
                 properties:
                   estado: { type: string, enum: [ok] }
+        "429": { $ref: "#/components/responses/DemasiadasPeticiones" }
   /tareas:
     get:
       operationId: listarTareas
@@ -51,6 +54,10 @@ paths:
       responses:
         "200":
           description: Una página de tareas
+          headers:
+            Link:
+              description: Enlaces a la página siguiente (rel="next") y a la anterior (rel="prev"), si las hay
+              schema: { type: string, example: '</tareas?pagina=2&limite=10>; rel="next"' }
           content:
             application/json:
               schema: { $ref: "#/components/schemas/PaginaTareas" }
@@ -103,6 +110,7 @@ paths:
         content:
           application/json:
             schema: { $ref: "#/components/schemas/TareaNueva" }
+            example: { titulo: Leer el contrato entero, completada: false, prioridad: alta }
       responses:
         "200":
           description: La tarea reemplazada
@@ -156,7 +164,9 @@ paths:
                 properties:
                   items:
                     type: array
+                    description: Todos los proyectos
                     items: { $ref: "#/components/schemas/Proyecto" }
+        "429": { $ref: "#/components/responses/DemasiadasPeticiones" }
     post:
       operationId: crearProyecto
       tags: [proyectos]
@@ -255,8 +265,9 @@ components:
       properties:
         items:
           type: array
+          description: Las tareas de esta página
           items: { $ref: "#/components/schemas/Tarea" }
-        total: { type: integer, description: Tareas que cumplen los filtros, en todas las páginas }
+        total: { type: integer, description: "Tareas que cumplen los filtros, en todas las páginas" }
         pagina: { type: integer, description: Página devuelta }
         limite: { type: integer, description: Tareas por página }
     Proyecto:
@@ -299,6 +310,15 @@ components:
           schema: { $ref: "#/components/schemas/Problema" }
     NoEncontrado:
       description: No existe
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }
+    DemasiadasPeticiones:
+      description: Demasiadas peticiones en un minuto. La cabecera RateLimit dice cuándo volver
+      headers:
+        RateLimit:
+          description: Cuántas peticiones quedan y en cuántos segundos se renueva el cupo
+          schema: { type: string, example: '"100-in-1min"; r=0; t=42' }
       content:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problema" }

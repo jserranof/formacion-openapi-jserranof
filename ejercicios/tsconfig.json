@@ -9,5 +9,5 @@
 		"noEmit": true,
 		"types": ["node"]
 	},
-	"include": ["comprobar.ts", "s*/src", "s*/pruebas"]
+	"include": ["comprobar.ts", "lint.ts", "s*/src", "s*/pruebas", "s*/mis-pruebas"]
 }

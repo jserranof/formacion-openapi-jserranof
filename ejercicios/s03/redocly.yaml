@@ -1,0 +1,12 @@
+# Reglas del lint del contrato: npm run lint:s03 (ejercicio 6)
+# Partimos de las recomendadas por Redocly y apagamos, diciendo por qué, las que no tocan hoy.
+extends:
+  - recommended
+
+rules:
+  security-defined: off # La seguridad llega en S4
+  no-server-example.com: off # En el curso, el servidor es localhost a propósito
+  info-license: off # API interna del curso: sin licencia pública
+
+  # Ejercicio 6 (reto): tu regla propia, «rule/<nombre>», que exija que cada operationId
+  # empiece por un verbo en infinitivo (listarTareas, crearTarea).

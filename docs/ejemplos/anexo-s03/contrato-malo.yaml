@@ -1,0 +1,45 @@
+# Un contrato que funciona, pero que no cumple la guía de estilo (anexo S3, bloque A)
+openapi: 3.1.0
+info:
+  title: Notas
+  version: 1.0.0
+paths:
+  /getNotas:
+    get:
+      operationId: notasGet
+      summary: Notas
+      responses:
+        "200":
+          description: Las notas
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/Nota" } }
+        "400":
+          description: Mal
+          content:
+            application/json:
+              schema: { type: object }
+  /Notas/{id}:
+    put:
+      operationId: actualizar_nota
+      summary: Actualiza
+      description: Actualiza
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Nota" }
+      responses:
+        "200": { description: Hecho }
+        "404": { description: No existe }
+components:
+  schemas:
+    Nota:
+      type: object
+      properties:
+        texto: { type: string }

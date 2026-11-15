@@ -7,7 +7,7 @@ import { leerContrato, operaciones, resolver } from "./contrato.js";
 const contrato = leerContrato();
 const deProyectos = () => operaciones(contrato).filter(({ ruta }) => ruta.startsWith("/proyectos"));
 
-describe("Ejercicio 4 (reto) · Proyectos, del contrato al código", () => {
+describe("Ejercicio 11 · Proyectos, del contrato al código", () => {
 	it("el contrato declara GET y POST /proyectos y GET /proyectos/{id}", () => {
 		for (const [ruta, verbo] of [["/proyectos", "get"], ["/proyectos", "post"], ["/proyectos/{id}", "get"]])
 			expect(contrato.paths?.[ruta]?.[verbo], `falta ${verbo.toUpperCase()} ${ruta}`).toBeDefined();
@@ -32,7 +32,7 @@ describe("Ejercicio 4 (reto) · Proyectos, del contrato al código", () => {
 
 	it("GET /proyectos responde { items }", async () => {
 		const res = await request(crearApp()).get("/proyectos");
-		expect(res.status).toBe(200);
+		expect(res.status, "monta las rutas en app.ts: app.use(\"/proyectos\", crearRutasProyectos())").toBe(200);
 		expect(Array.isArray(res.body.items)).toBe(true);
 	});
 
@@ -46,7 +46,7 @@ describe("Ejercicio 4 (reto) · Proyectos, del contrato al código", () => {
 
 	it("POST /proyectos sin nombre responde 400, y un id que no existe, 404", async () => {
 		const app = crearApp();
-		expect((await request(app).post("/proyectos").send({ descripcion: "Sin nombre" })).status).toBe(400);
-		expect((await request(app).get("/proyectos/999")).status).toBe(404);
+		expect((await request(app).post("/proyectos").send({ descripcion: "Sin nombre" })).status, "«nombre» tiene que estar en required de ProyectoNuevo").toBe(400);
+		expect((await request(app).get("/proyectos/999")).status, "si no lo encuentras, lanza un ErrorApi(404, …)").toBe(404);
 	});
 });

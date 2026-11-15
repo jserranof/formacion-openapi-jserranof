@@ -44,6 +44,9 @@ export function manejadorErrores(err: unknown, _req: Request, res: Response, _ne
 	if (tipo === "entity.parse.failed") return problema(res, 400, "JSON mal formado", "El cuerpo no es un JSON válido");
 	if (tipo === "entity.too.large") return problema(res, 413, "Cuerpo demasiado grande", "El máximo son 100 kB");
 
+	// Ejercicio 5: los errores del validador del contrato traen status (400, 404, 405, 415…)
+	// y errors: [{ path, message }]. Conviértelos en problem+json con su mismo status.
+
 	// Lo inesperado: se registra entero, pero al cliente no se le cuenta nada interno
 	console.error(`[${res.locals.idPeticion}]`, err);
 	problema(res, 500, "Error interno", "Algo ha fallado. Si se repite, avisa con el requestId");

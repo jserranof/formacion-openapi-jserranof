@@ -35,9 +35,10 @@ export function crearApp({ limitePorMinuto = 100, origenes = ["http://localhost:
 	app.use(limitePeticiones(limitePorMinuto));
 	app.use(express.json({ limit: "100kb" }));
 
-	// Ejercicio 2: publicar el contrato y hacer que la API lo cumpla
+	// Ejercicio 4: publicar el contrato
 	//   1. Lee ../openapi.yaml (readFileSync + parse de «yaml») y sírvelo en GET /openapi.json
 	//   2. Swagger UI en /docs: app.use("/docs", swaggerUi.serve, swaggerUi.setup(contrato))
+	// Ejercicio 5: que la API lo cumpla
 	//   3. OpenApiValidator.middleware({ apiSpec, validateRequests: true, validateResponses: true,
 	//      ignorePaths: /^\/(docs|openapi\.json|fallo-de-prueba)/ })
 	//   4. En errores.ts, convierte los errores del validador (traen status y errors) en problem+json
@@ -48,7 +49,7 @@ export function crearApp({ limitePorMinuto = 100, origenes = ["http://localhost:
 
 	app.use("/tareas", crearRutasTareas(new ServicioTareas(new RepositorioTareas())));
 
-	// Ejercicio 4 (reto): app.use("/proyectos", crearRutasProyectos())
+	// Ejercicio 11: app.use("/proyectos", crearRutasProyectos())
 
 	// Solo para las pruebas del manejador de errores: simula un fallo inesperado
 	app.get("/fallo-de-prueba", () => {

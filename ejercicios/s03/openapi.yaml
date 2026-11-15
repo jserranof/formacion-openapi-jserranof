@@ -22,12 +22,12 @@ paths:
                 properties:
                   estado: { type: string, enum: [ok] }
 
-  # Ejercicio 1: /tareas (get, post) y /tareas/{id} (get, put, patch, delete)
-  # Ejercicio 4 (reto): /proyectos (get, post) y /proyectos/{id} (get)
+  # Ejercicio 2: /tareas (get, post) y /tareas/{id} (get, put, patch, delete)
+  # Ejercicio 11: /proyectos (get, post) y /proyectos/{id} (get)
 
 components:
   schemas:
-    # Ejercicio 1: Prioridad, Tarea, TareaNueva, CambiosTarea, PaginaTareas
+    # Ejercicio 2: Prioridad, Tarea, TareaNueva, CambiosTarea, PaginaTareas
 
     Problema:
       type: object
