@@ -686,3 +686,26 @@ ellas, la terminal se come el `?`.
 | `No he podido ejecutar las pruebas` | Faltan dependencias | `cd ejercicios && npm ci` |
 | En Windows (local), el `curl` con `-d '{…}'` falla | PowerShell trata las comillas de otra forma | Usa Git Bash, o el codespace |
 | El navegador no abre `localhost:3000` en Codespaces | El codespace está en la nube, no en tu equipo | Pestaña **Puertos** → globo del 3000 |
+
+## Antes de irte: guarda todo en GitHub
+
+Lo último del día, aunque ya hicieras commit en el cierre: guarda **todo** lo que hayas
+tocado después (ejercicios, práctica, demos de reserva o pruebas sueltas).
+
+**Terminal:**
+
+```bash
+# desde la raíz del repositorio
+git branch --show-current                  # alumno/<tu-nombre>, no main
+git add -A                                 # todo lo que has cambiado o creado
+git commit -m "s01: fin de la sesión"
+git push
+git status                                 # nothing to commit, working tree clean
+```
+
+**Comprobar:** `git status` dice `nothing to commit, working tree clean` y en GitHub, en
+tu rama, está tu último commit. Si `git commit` dice `nothing to commit`, ya lo tenías
+todo guardado: no pasa nada.
+
+Después, para el codespace (github.com/codespaces → `…` → **Stop codespace**). No lo
+borres.

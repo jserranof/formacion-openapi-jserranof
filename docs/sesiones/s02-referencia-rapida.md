@@ -610,7 +610,7 @@ rompe? (R1).
 
 ```bash
 # desde la raíz del repositorio
-git branch --show-current                  # main en tu copia; alumno/<tu-nombre> si eres colaborador
+git branch --show-current                  # alumno/<tu-nombre>, no main
 git add -A
 git commit -m "s02: ejercicios"
 git push
@@ -720,3 +720,26 @@ sin tocar rutas ni servicio, y CORS en un navegador de verdad.
 | `TS2339: Property 'idPeticion' does not exist` | Usas `req.idPeticion` | Se guarda en `res.locals.idPeticion` |
 | `No he podido ejecutar las pruebas` | Faltan dependencias | `cd ejercicios && npm ci` |
 | Los retos (e03, e06, e09, e12) en `[FALTA]` | Son opcionales: se cuentan aparte | Hazlos si acabas antes |
+
+## Antes de irte: guarda todo en GitHub
+
+Lo último del día, aunque ya hicieras commit en el cierre: guarda **todo** lo que hayas
+tocado después (ejercicios, práctica, demos de reserva o pruebas sueltas).
+
+**Terminal:**
+
+```bash
+# desde la raíz del repositorio
+git branch --show-current                  # alumno/<tu-nombre>, no main
+git add -A                                 # todo lo que has cambiado o creado
+git commit -m "s02: fin de la sesión"
+git push
+git status                                 # nothing to commit, working tree clean
+```
+
+**Comprobar:** `git status` dice `nothing to commit, working tree clean` y en GitHub, en
+tu rama, está tu último commit. Si `git commit` dice `nothing to commit`, ya lo tenías
+todo guardado: no pasa nada.
+
+Después, para el codespace (github.com/codespaces → `…` → **Stop codespace**). No lo
+borres.
