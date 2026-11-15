@@ -24,6 +24,11 @@ ejercicio antes o si sobra tiempo al final, y termínala en casa. Las dudas que 
 se ven al principio de la sesión siguiente. Y un **cuestionario** de 10 preguntas
 ([`docs/cuestionarios/cuestionario-sesion-NN.pdf`](../cuestionarios/)), en el cierre.
 
+Algunas sesiones tienen además un **anexo** (`anexos/sNN-anexo-slides.md` y su
+referencia rápida): material de ampliación para cuando sobra tiempo, con su PDF en
+`docs/material/sesion-NN-anexo.pdf`. El de S2: [salud y parada ordenada, SQLite y CORS en
+el navegador](anexos/s02-anexo-slides.md).
+
 Cada `sNN-referencia-rapida.md` recoge, sección a sección (§N), los pasos y el código
 exacto de todo lo que se hace en la sesión. Es lo que se pega en el chat durante la clase.
 

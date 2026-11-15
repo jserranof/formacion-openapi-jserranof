@@ -13,7 +13,7 @@ function camposConError(res: request.Response): string[] {
 	return res.body.errors.map((e: { campo: string }) => e.campo);
 }
 
-describe("Ejercicio 2 · Validación y errores con problem+json", () => {
+describe("Ejercicio 5 · Validar lo que llega con Zod", () => {
 	it("POST sin «titulo» responde 400 y dice qué campo falla", async () => {
 		const res = await request(crearApp()).post("/tareas").send({ prioridad: "alta" });
 		esProblema(res, 400);
@@ -50,12 +50,9 @@ describe("Ejercicio 2 · Validación y errores con problem+json", () => {
 		expect((await request(app).get("/tareas/1")).status).toBe(200);
 	});
 
-	it("un JSON mal formado responde 400 con problem+json, no con una página HTML", async () => {
-		const res = await request(crearApp()).post("/tareas").set("Content-Type", "application/json").send('{"titulo": ');
+	it("PUT sin «titulo» responde 400: sustituir pide la tarea entera", async () => {
+		const res = await request(crearApp()).put("/tareas/2").send({ completada: true });
 		esProblema(res, 400);
-	});
-
-	it("GET /tareas/99 responde 404 con problem+json", async () => {
-		esProblema(await request(crearApp()).get("/tareas/99"), 404);
+		expect(camposConError(res)).toContain("titulo");
 	});
 });

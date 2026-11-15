@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anexo S2 · CORS en el navegador</title>
+<style>
+	body { font: 16px/1.5 -apple-system, "Segoe UI", Arial, sans-serif; margin: 24px; color: #222; background: #fafafa; }
+	h1 { font-size: 20px; margin: 0 0 4px; }
+	.origen { color: #A61731; font-family: Menlo, monospace; }
+	label, input, button { font: inherit; }
+	input { width: 320px; padding: 4px 8px; }
+	button { margin: 12px 8px 12px 0; padding: 6px 14px; border: 1px solid #A61731; background: #fff; color: #A61731; border-radius: 6px; cursor: pointer; }
+	pre { background: #1e1e1e; color: #e6e6e6; padding: 14px; border-radius: 8px; white-space: pre-wrap; min-height: 120px; font: 14px/1.5 Menlo, monospace; }
+	.ok { color: #4ec98a; } .mal { color: #ff6b6b; }
+</style>
+</head>
+<body>
+<h1>Una web en otro origen llama a tu API</h1>
+<p>Esta página se sirve desde <span class="origen" id="origen"></span>. La API está en otro puerto: para el navegador, es <strong>otro origen</strong>.</p>
+<label>API: <input id="base" value="http://localhost:3000"></label>
+<div>
+	<button id="leer">GET /tareas?limite=2</button>
+	<button id="crear">POST /tareas</button>
+</div>
+<pre id="salida">Pulsa un botón. Si el navegador bloquea la respuesta, mira también la consola (F12).</pre>
+<script>
+	const $ = (id) => document.getElementById(id);
+	$("origen").textContent = location.origin;
+	const salida = $("salida");
+	const escribe = (clase, texto) => { salida.innerHTML = ""; const s = document.createElement("span"); s.className = clase; s.textContent = texto; salida.append(s); };
+
+	async function llamar(metodo, ruta, cuerpo) {
+		try {
+			const res = await fetch($("base").value + ruta, {
+				method: metodo,
+				headers: cuerpo ? { "Content-Type": "application/json" } : {},
+				body: cuerpo ? JSON.stringify(cuerpo) : undefined,
+			});
+			const visibles = ["content-type", "location", "link", "x-request-id"].map((h) => `${h}: ${res.headers.get(h) ?? "(no visible)"}`).join("\n");
+			escribe("ok", `${res.status} ${res.statusText}\n${visibles}\n\n${await res.text()}`);
+		} catch (e) {
+			escribe("mal", `El navegador ha bloqueado la respuesta (${e.message}).\n\nLa API sí ha recibido la petición, pero no ha dicho que ${location.origin} pueda leerla:\nfalta Access-Control-Allow-Origin con este origen. Detalle, en la consola (F12).`);
+		}
+	}
+
+	$("leer").onclick = () => llamar("GET", "/tareas?limite=2");
+	$("crear").onclick = () => llamar("POST", "/tareas", { titulo: "Creada desde " + location.origin });
+	// ?auto=leer lanza la petición al abrir (para las capturas)
+	const auto = new URLSearchParams(location.search).get("auto");
+	if (auto) $(auto).click();
+</script>
+</body>
+</html>

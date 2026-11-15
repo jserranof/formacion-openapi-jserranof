@@ -47,7 +47,7 @@ repositorio) y el formador ve cómo vas.
 | Sesión | Ejercicios |
 |---|---|
 | S1 | [`s01/`](s01/README.md): explorar una API, verbos y códigos, `GET /salud`, listar, tipar, obtener uno con 404, un resumen y dos retos |
-| S2 | [`s02/`](s02/README.md): CRUD, validación con Zod, filtros y paginación, middleware, y un reto con el 500 |
+| S2 | [`s02/`](s02/README.md): arreglar un diseño, el CRUD, el manejador de errores, validar con Zod, filtrar, ordenar y paginar, la cadena de middleware, límites y registro, y cuatro retos (405, el id, `Link` y el 500) |
 | S3 | [`s03/`](s03/README.md): el contrato OpenAPI, validar contra él, tus propias pruebas, y un reto contract-first |
 | S4 | [`s04/`](s04/README.md): JWT, permisos y BOLA, ETag, Idempotency-Key, y un servidor MCP para agentes |
 

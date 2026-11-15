@@ -1,0 +1,52 @@
+### Extensión REST Client de VS Code: pulsa «Send Request» encima de cada petición
+### Arranca antes tu API: cd ejercicios && npm run dev:s02
+
+@base = http://localhost:3000
+
+### Listar (página 1, 10 por página)
+GET {{base}}/tareas
+
+### Filtrar, ordenar y paginar
+GET {{base}}/tareas?prioridad=alta&orden=-titulo&limite=2&pagina=1
+
+### Una
+GET {{base}}/tareas/3
+
+### Crear: 201 y Location
+POST {{base}}/tareas
+Content-Type: application/json
+
+{ "titulo": "Preparar la demo", "prioridad": "alta" }
+
+### Crear sin título: 400 con errors
+POST {{base}}/tareas
+Content-Type: application/json
+
+{ "prioridad": "alta" }
+
+### Sustituir entera
+PUT {{base}}/tareas/3
+Content-Type: application/json
+
+{ "titulo": "Leer el contrato entero", "completada": false, "prioridad": "alta" }
+
+### Cambiar solo una parte
+PATCH {{base}}/tareas/3
+Content-Type: application/json
+
+{ "completada": true }
+
+### Borrar: 204 sin cuerpo
+DELETE {{base}}/tareas/3
+
+### Un verbo que no existe sobre la colección: 405 (reto e03)
+DELETE {{base}}/tareas
+
+### Un id que no es un id: 400 (reto e06)
+GET {{base}}/tareas/abc
+
+### JSON mal formado: 400
+POST {{base}}/tareas
+Content-Type: application/json
+
+{ "titulo":

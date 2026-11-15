@@ -32,13 +32,14 @@ export function noEncontrado(req: Request, res: Response) {
 	problema(res, 404, "No encontrado", `No existe ${req.method} ${req.path}`);
 }
 
-// Ejercicio 2: el manejador central de errores. Hoy pasa el error a Express, que
+// Ejercicio 4: el manejador central de errores. Hoy pasa el error a Express, que
 // responde con una página HTML. Haz que responda siempre con problem+json:
-//   - ErrorApi                      → su status, título y detalle
-//   - ZodError                      → 400 con errors: [{ campo, mensaje }]
-//   - err.type "entity.parse.failed" → 400 (JSON mal formado)
-//   - err.type "entity.too.large"   → 413 (ejercicio 4)
-//   - cualquier otro                → 500 sin contar nada interno (ejercicio 5)
+//   - ErrorApi                       → su status, título y detalle (ejercicio 4)
+//   - err.type "entity.parse.failed" → 400, JSON mal formado (ejercicio 4)
+//   - ZodError                       → 400 con errors: [{ campo, mensaje }] (ejercicio 5)
+//   - err.type "entity.too.large"    → 413 (ejercicio 11)
+//   - cualquier otro                 → 500 sin contar nada interno (ejercicio 12, reto)
+// Ojo: Express reconoce un manejador de errores porque tiene CUATRO parámetros.
 export function manejadorErrores(err: unknown, _req: Request, _res: Response, next: NextFunction) {
 	next(err);
 }

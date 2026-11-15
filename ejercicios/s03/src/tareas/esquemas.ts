@@ -2,7 +2,7 @@ import { z } from "zod";
 import { PRIORIDADES } from "../datos.js";
 
 const campos = z.object({
-	titulo: z.string({ error: "«titulo» tiene que ser un texto" }).trim().min(1, "«titulo» no puede estar vacío").max(120, "«titulo» admite como mucho 120 caracteres"),
+	titulo: z.string({ error: (i) => (i.input === undefined ? "«titulo» es obligatorio" : "«titulo» tiene que ser un texto") }).trim().min(1, "«titulo» no puede estar vacío").max(120, "«titulo» admite como mucho 120 caracteres"),
 	completada: z.boolean({ error: "«completada» tiene que ser true o false" }),
 	prioridad: z.enum(PRIORIDADES, { error: "«prioridad» tiene que ser baja, media o alta" }),
 });
@@ -17,6 +17,11 @@ export const TareaNueva = campos
 
 // PATCH: solo lo que cambia, sin valores por defecto
 export const CambiosTarea = campos.partial().strict();
+
+// El parámetro de ruta: todo lo que llega en la URL es texto, así que se convierte
+export const IdRuta = z.object({
+	id: z.coerce.number({ error: "«id» tiene que ser un número" }).int("«id» tiene que ser un entero").min(1, "«id» empieza en 1"),
+});
 
 export const Consulta = z.object({
 	prioridad: z.enum(PRIORIDADES, { error: "«prioridad» tiene que ser baja, media o alta" }).optional(),

@@ -4,7 +4,7 @@ import { crearApp } from "../src/app.js";
 
 const nueva = { titulo: "Preparar la demo", prioridad: "alta", completada: false };
 
-describe("Ejercicio 1 · CRUD completo de /tareas", () => {
+describe("Ejercicio 2 · CRUD completo de /tareas", () => {
 	it("POST /tareas responde 201 con la tarea creada y su id", async () => {
 		const res = await request(crearApp()).post("/tareas").send(nueva);
 		expect(res.status, "crear es 201 Created, no 200").toBe(201);

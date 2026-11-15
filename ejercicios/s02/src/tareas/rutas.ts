@@ -13,7 +13,12 @@ export function crearRutasTareas(servicio: ServicioTareas) {
 		res.json(servicio.obtener(Number(req.params.id)));
 	});
 
-	// Ejercicio 1: POST / (201 + Location), PUT /:id, PATCH /:id y DELETE /:id (204)
+	// Ejercicio 2: POST / (201 + Location), PUT /:id, PATCH /:id y DELETE /:id (204)
+
+	// Ejercicio 3 (reto): después de todas, rutas.all("/", …) y rutas.all("/:id", …)
+	// responden 405 con la cabecera Allow y problem+json
+
+	// Ejercicio 9 (reto): en GET /, la cabecera Link con rel="next" y rel="prev"
 
 	return rutas;
 }

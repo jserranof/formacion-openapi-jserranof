@@ -2,7 +2,7 @@ import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 import { crearApp } from "../src/app.js";
 
-describe("Ejercicio 5 (reto) · Un 500 que no cuenta secretos", () => {
+describe("Ejercicio 12 (reto) · Un 500 que no cuenta secretos", () => {
 	it("un fallo inesperado responde 500 con problem+json", async () => {
 		vi.spyOn(console, "error").mockImplementation(() => {});
 		const res = await request(crearApp()).get("/fallo-de-prueba");

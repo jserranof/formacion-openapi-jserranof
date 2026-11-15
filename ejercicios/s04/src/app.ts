@@ -7,17 +7,28 @@ import helmet from "helmet";
 import { createRemoteJWKSet } from "jose";
 import type { OpcionesAuth } from "./auth.js";
 import { manejadorErrores, noEncontrado } from "./errores.js";
-import { corsConLista, idPeticion, limitePeticiones } from "./middleware.js";
+import { corsConLista, idPeticion, limitePeticiones, registroPeticiones } from "./middleware.js";
 import { crearRutasProyectos } from "./proyectos/rutas.js";
 import { RepositorioTareas } from "./tareas/repositorio.js";
 import { crearRutasTareas } from "./tareas/rutas.js";
 import { ServicioTareas } from "./tareas/servicio.js";
+
+/** Una línea del registro: una por petición (S2, ejercicio 11) */
+export interface LineaRegistro {
+	requestId: string;
+	metodo: string;
+	ruta: string;
+	status: number;
+	ms: number;
+}
 
 export interface Opciones {
 	/** Peticiones por minuto y cliente (por defecto, 100) */
 	limitePorMinuto?: number;
 	/** Orígenes que pueden llamar desde un navegador */
 	origenes?: string[];
+	/** Qué hacer con cada línea del registro (por defecto, nada; server.ts la escribe en la consola) */
+	registro?: (linea: LineaRegistro) => void;
 	/** En qué tokens confiar. Por defecto, los del servidor de autorización de EMISOR (puerto 9000) */
 	auth?: OpcionesAuth;
 }
@@ -27,12 +38,13 @@ function authPorDefecto(): OpcionesAuth {
 	return { claves: createRemoteJWKSet(new URL(`${emisor}/jwks`)), emisor, audiencia: "api-curso" };
 }
 
-export function crearApp({ limitePorMinuto = 100, origenes = ["http://localhost:5173"], auth = authPorDefecto() }: Opciones = {}) {
+export function crearApp({ limitePorMinuto = 100, origenes = ["http://localhost:5173"], registro, auth = authPorDefecto() }: Opciones = {}) {
 	void auth; // Ejercicio 1: úsalo con autenticar(auth)
 	const app = express();
 
 	// El orden importa: cada pieza ve la petición después de las de arriba
 	app.use(idPeticion);
+	app.use(registroPeticiones(registro));
 	app.use(helmet());
 	app.use(corsConLista(origenes));
 	app.use(limitePeticiones(limitePorMinuto));

@@ -6,7 +6,7 @@ import type { RepositorioTareas } from "./repositorio.js";
 export class ServicioTareas {
 	constructor(private repo: RepositorioTareas) {}
 
-	// Ejercicio 3: filtrar, ordenar y paginar. Devuelve { items, total, pagina, limite }
+	// Ejercicios 7 y 8: filtrar, ordenar y paginar. Devuelve { items, total, pagina, limite }
 	listar() {
 		return { items: this.repo.todas() };
 	}
@@ -17,5 +17,5 @@ export class ServicioTareas {
 		return tarea;
 	}
 
-	// Ejercicio 1: crear, reemplazar, cambiar y borrar (el repositorio ya sabe guardar)
+	// Ejercicio 2: crear, reemplazar, cambiar y borrar (el repositorio ya sabe guardar)
 }

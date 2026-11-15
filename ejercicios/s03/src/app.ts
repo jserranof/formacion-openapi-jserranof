@@ -1,23 +1,35 @@
 import express from "express";
 import helmet from "helmet";
 import { manejadorErrores, noEncontrado } from "./errores.js";
-import { corsConLista, idPeticion, limitePeticiones } from "./middleware.js";
+import { corsConLista, idPeticion, limitePeticiones, registroPeticiones } from "./middleware.js";
 import { RepositorioTareas } from "./tareas/repositorio.js";
 import { crearRutasTareas } from "./tareas/rutas.js";
 import { ServicioTareas } from "./tareas/servicio.js";
+
+/** Una línea del registro: una por petición (S2, ejercicio 11) */
+export interface LineaRegistro {
+	requestId: string;
+	metodo: string;
+	ruta: string;
+	status: number;
+	ms: number;
+}
 
 export interface Opciones {
 	/** Peticiones por minuto y cliente (por defecto, 100) */
 	limitePorMinuto?: number;
 	/** Orígenes que pueden llamar desde un navegador */
 	origenes?: string[];
+	/** Qué hacer con cada línea del registro (por defecto, nada; server.ts la escribe en la consola) */
+	registro?: (linea: LineaRegistro) => void;
 }
 
-export function crearApp({ limitePorMinuto = 100, origenes = ["http://localhost:5173"] }: Opciones = {}) {
+export function crearApp({ limitePorMinuto = 100, origenes = ["http://localhost:5173"], registro }: Opciones = {}) {
 	const app = express();
 
 	// El orden importa: cada pieza ve la petición después de las de arriba
 	app.use(idPeticion);
+	app.use(registroPeticiones(registro));
 	app.use(helmet());
 	app.use(corsConLista(origenes));
 	app.use(limitePeticiones(limitePorMinuto));
