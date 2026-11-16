@@ -251,8 +251,9 @@ un repositorio tuyo y subir a él solo tu rama.
 **Terminal, en tu equipo** (no en el codespace: su permiso es solo para el repositorio
 del curso):
 
-> ⚠️ POR VERIFICAR: que el `git push` a otro repositorio falle desde el codespace no se
-> ha probado en uno real. Desde tu equipo funciona.
+> Un codespace solo tiene permiso sobre el repositorio desde el que se creó, y no se puede
+> ampliar a un repositorio de otra cuenta, como la tuya
+> ([documentación de GitHub](https://docs.github.com/en/codespaces/managing-your-codespaces/managing-repository-access-for-your-codespaces)).
 
 ```bash
 # desde la carpeta donde guardes tus proyectos
