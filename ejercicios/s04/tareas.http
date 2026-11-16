@@ -1,0 +1,101 @@
+### Extensión REST Client de VS Code: pulsa «Send Request» encima de cada petición
+### Arranca antes el servidor de autorización y tu API, en dos terminales:
+###   cd ejercicios && npm run autorizacion
+###   cd ejercicios && npm run dev:s04
+### Los códigos de los comentarios son los de la API con los ejercicios hechos
+
+@base = http://localhost:3000
+@autorizacion = http://localhost:9000
+
+### Pública: 200 sin token
+GET {{base}}/salud
+
+### Sin token: 401 con WWW-Authenticate (e02)
+GET {{base}}/tareas
+
+### Un token de app-lectura (solo tareas:leer)
+# @name lectura
+POST {{autorizacion}}/token
+Authorization: Basic app-lectura:secreto
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&scope=tareas:leer tareas:escribir
+
+### Un token de app-gestion (todos los permisos)
+# @name gestion
+POST {{autorizacion}}/token
+Authorization: Basic app-gestion:secreto
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&scope=tareas:leer tareas:escribir proyectos:leer proyectos:escribir
+
+### Leer con app-lectura: 200, solo las tareas de ana (e07)
+GET {{base}}/tareas?limite=20
+Authorization: Bearer {{lectura.response.body.access_token}}
+
+### Crear con app-lectura: 403, falta tareas:escribir (e04)
+POST {{base}}/tareas
+Authorization: Bearer {{lectura.response.body.access_token}}
+Content-Type: application/json
+
+{ "titulo": "No debería" }
+
+### Crear con app-gestion: 201 y Location
+POST {{base}}/tareas
+Authorization: Bearer {{gestion.response.body.access_token}}
+Content-Type: application/json
+
+{ "titulo": "Preparar la demo", "prioridad": "alta" }
+
+### La tarea 7 es de luis: 404, como si no existiera (e07)
+GET {{base}}/tareas/7
+Authorization: Bearer {{gestion.response.body.access_token}}
+
+### Asignación masiva: 400, «propietario» no está en el contrato (e07)
+POST {{base}}/tareas
+Authorization: Bearer {{gestion.response.body.access_token}}
+Content-Type: application/json
+
+{ "titulo": "Trampa", "propietario": "luis" }
+
+### Leer la tarea 3: 200 con ETag (e08)
+# @name tarea3
+GET {{base}}/tareas/3
+Authorization: Bearer {{gestion.response.body.access_token}}
+
+### Con If-None-Match y el mismo ETag: 304 (e08)
+GET {{base}}/tareas/3
+Authorization: Bearer {{gestion.response.body.access_token}}
+If-None-Match: {{tarea3.response.headers.ETag}}
+
+### Cambiarla con la versión que leíste: 200 y ETag nuevo (e08)
+PATCH {{base}}/tareas/3
+Authorization: Bearer {{gestion.response.body.access_token}}
+If-Match: {{tarea3.response.headers.ETag}}
+Content-Type: application/json
+
+{ "prioridad": "alta" }
+
+### Repetir el cambio con la versión vieja: 412 (e08)
+PATCH {{base}}/tareas/3
+Authorization: Bearer {{gestion.response.body.access_token}}
+If-Match: {{tarea3.response.headers.ETag}}
+Content-Type: application/json
+
+{ "prioridad": "baja" }
+
+### Con Idempotency-Key: 201. Mándala dos veces: la segunda, Idempotent-Replayed (e09)
+POST {{base}}/tareas
+Authorization: Bearer {{gestion.response.body.access_token}}
+Idempotency-Key: pedido-42
+Content-Type: application/json
+
+{ "titulo": "Solo una vez" }
+
+### La misma clave con otro cuerpo: 422 (e09)
+POST {{base}}/tareas
+Authorization: Bearer {{gestion.response.body.access_token}}
+Idempotency-Key: pedido-42
+Content-Type: application/json
+
+{ "titulo": "Otra cosa" }

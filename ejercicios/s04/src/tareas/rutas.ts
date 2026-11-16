@@ -4,7 +4,7 @@ import { problema } from "../errores.js";
 import { CambiosTarea, Consulta, IdRuta, TareaNueva } from "./esquemas.js";
 import type { ServicioTareas } from "./servicio.js";
 
-// Quién hace la petición: lo deja autenticar() en res.locals.usuario (ejercicio 1)
+// Quién hace la petición: lo deja autenticar() en res.locals.usuario (ejercicio 2)
 const quien = (res: Response) => (res.locals.usuario as Usuario | undefined)?.sub ?? "anonimo";
 
 // El id de la ruta, ya validado: «abc», 0 o 2.5 son un 400 con campo «id»
@@ -30,7 +30,8 @@ function enlaces(req: Request, pagina: number, limite: number, total: number) {
 	return partes.join(", ");
 }
 
-// Ejercicio 3: ETag fuerte en GET, PUT y PATCH; 304 con If-None-Match; 412 con un If-Match viejo.
+// Ejercicio 7: pasa quien(res) al servicio en todas las rutas, no solo al crear.
+// Ejercicio 8: ETag fuerte en GET, PUT y PATCH; 304 con If-None-Match; 412 con un If-Match viejo.
 // Traduce HTTP a llamadas al servicio. Express 5 pasa al manejador de errores lo que se lance aquí.
 export function crearRutasTareas(servicio: ServicioTareas) {
 	const rutas = Router();

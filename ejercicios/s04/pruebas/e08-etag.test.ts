@@ -4,10 +4,10 @@ import { appDePrueba, bearer, token } from "./tokens.js";
 
 const ana = async () => bearer(await token({ sub: "ana" }));
 
-describe("Ejercicio 3 · ETag: caché y cambios sin pisarse", () => {
-	it("GET /tareas/1 devuelve un ETag entre comillas", async () => {
+describe("Ejercicio 8 · ETag: caché y cambios sin pisarse", () => {
+	it("GET /tareas/1 devuelve un ETag fuerte: la huella de la tarea, entre comillas y sin W/", async () => {
 		const res = await request(appDePrueba()).get("/tareas/1").set(await ana());
-		expect(res.headers.etag, 'ETag: "<huella de la tarea>"').toMatch(/^(W\/)?".+"$/);
+		expect(res.headers.etag, 'el de Express es débil (W/"…") y If-Match necesita uno fuerte: res.set("ETag", `"${huella}"`)').toMatch(/^".+"$/);
 	});
 
 	it("con If-None-Match y el mismo ETag responde 304 sin cuerpo", async () => {
@@ -24,7 +24,7 @@ describe("Ejercicio 3 · ETag: caché y cambios sin pisarse", () => {
 		const t = await ana();
 		const antes = (await request(app).get("/tareas/1").set(t)).headers.etag;
 		const cambio = await request(app).patch("/tareas/1").set(t).send({ titulo: "Otro título" });
-		expect(cambio.headers.etag, "el PATCH responde con el ETag nuevo").toBeDefined();
+		expect(cambio.headers.etag, "el PATCH responde con el ETag nuevo, también fuerte").toMatch(/^".+"$/);
 		expect(cambio.headers.etag).not.toBe(antes);
 		expect((await request(app).get("/tareas/1").set(t)).headers.etag).toBe(cambio.headers.etag);
 	});
@@ -38,6 +38,15 @@ describe("Ejercicio 3 · ETag: caché y cambios sin pisarse", () => {
 		expect(res.status, "alguien la cambió desde que la leíste: 412 Precondition Failed").toBe(412);
 		expect(res.headers["content-type"]).toMatch(/application\/problem\+json/);
 		expect((await request(app).get("/tareas/3").set(t)).body.prioridad, "el cambio rechazado no se aplica").toBe("alta");
+	});
+
+	it("PUT con If-Match de una versión vieja también responde 412", async () => {
+		const app = appDePrueba();
+		const t = await ana();
+		const vieja = (await request(app).get("/tareas/5").set(t)).headers.etag;
+		await request(app).patch("/tareas/5").set(t).send({ completada: true });
+		const res = await request(app).put("/tareas/5").set(t).set("If-Match", vieja).send({ titulo: "Pisada", prioridad: "baja", completada: false });
+		expect(res.status, "comprueba la versión en PUT igual que en PATCH").toBe(412);
 	});
 
 	it("PATCH y PUT con el If-Match actual sí se aplican", async () => {

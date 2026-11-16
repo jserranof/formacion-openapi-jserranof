@@ -210,8 +210,9 @@ paths:
         "400": { $ref: "#/components/responses/PeticionNoValida" }
         "404": { $ref: "#/components/responses/NoEncontrado" }
 components:
-  # Ejercicio 1: securitySchemes (oauth2 con clientCredentials y http bearer), «security» en
-  # la raíz del contrato, y «security: []» en /salud para que siga siendo pública
+  # Ejercicio 5: securitySchemes (oauth2 con clientCredentials y authorizationCode, y http
+  # bearer), «security» en la raíz, «security: []» en /salud, el permiso de cada operación de
+  # /tareas y sus respuestas 401 y 403
   parameters:
     IdTarea:
       name: id

@@ -4,8 +4,8 @@ import type { CambiosTarea, Consulta, TareaNueva } from "./esquemas.js";
 import type { RepositorioTareas } from "./repositorio.js";
 
 // Las reglas del negocio. No sabe nada de HTTP salvo los errores que lanza.
-// Ejercicio 2: cada usuario solo ve y toca sus tareas. Pasa el propietario a listar, obtener,
-// cambiar y borrar, y responde 404 (no 403) con la tarea de otro.
+// Ejercicio 7: cada usuario solo ve y toca sus tareas. Pasa el propietario a listar, obtener,
+// reemplazar, cambiar y borrar, y responde 404 (no 403) con la tarea de otro.
 export class ServicioTareas {
 	constructor(private repo: RepositorioTareas) {}
 

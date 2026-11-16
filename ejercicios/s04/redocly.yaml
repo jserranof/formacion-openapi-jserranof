@@ -1,0 +1,19 @@
+# Reglas del lint del contrato: npm run lint:s04 (ejercicio 5)
+# Las mismas de S3, y ahora con «security-defined» encendida: cada operación tiene que
+# decir cómo se autentica (o «security: []» si es pública).
+extends:
+  - recommended
+
+rules:
+  no-server-example.com: off # En el curso, el servidor es localhost a propósito
+  info-license: off # API interna del curso: sin licencia pública
+
+  # Cada operationId empieza por un verbo en infinitivo (el reto e06 de S3)
+  rule/operationid-con-verbo:
+    subject:
+      type: Operation
+      property: operationId
+    assertions:
+      pattern: /^[a-z]+(ar|er|ir)[A-Z]/
+    message: El operationId empieza por un verbo en infinitivo, como listarTareas o crearTarea
+    severity: error

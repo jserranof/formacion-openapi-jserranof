@@ -28,7 +28,9 @@ Algunas sesiones tienen además un **anexo** (`anexos/sNN-anexo-slides.md` y su
 referencia rápida): material de ampliación para cuando sobra tiempo, con su PDF en
 `docs/material/sesion-NN-anexo.pdf`. El de S2: [salud y parada ordenada, SQLite y CORS en
 el navegador](anexos/s02-anexo-slides.md). El de S3: [una guía de estilo como reglas de
-lint, un cliente tipado con el contrato y code-first con Zod](anexos/s03-anexo-slides.md).
+lint, un cliente tipado con el contrato y code-first con Zod](anexos/s03-anexo-slides.md). El
+de S4: [webhooks firmados con HMAC, operaciones que tardan (202) y rotar las claves de
+firma](anexos/s04-anexo-slides.md).
 
 Cada `sNN-referencia-rapida.md` recoge, sección a sección (§N), los pasos y el código
 exacto de todo lo que se hace en la sesión. Es lo que se pega en el chat durante la clase.

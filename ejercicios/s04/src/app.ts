@@ -39,13 +39,22 @@ function authPorDefecto(): OpcionesAuth {
 }
 
 export function crearApp({ limitePorMinuto = 100, origenes = ["http://localhost:5173"], registro, auth = authPorDefecto() }: Opciones = {}) {
-	void auth; // Ejercicio 1: úsalo con autenticar(auth)
+	void auth; // Ejercicio 2: úsalo con autenticar(auth)
 	const app = express();
 
 	// El orden importa: cada pieza ve la petición después de las de arriba
 	app.use(idPeticion);
 	app.use(registroPeticiones(registro));
-	app.use(helmet());
+	// El «Authorize» de Swagger UI necesita dos permisos que helmet quita por defecto: conectar con el
+	// servidor de autorización (CSP connect-src), y que la ventana del inicio de sesión pueda
+	// devolver el code a la página que la abrió (sin Cross-Origin-Opener-Policy, que solo afecta a
+	// las páginas HTML de /docs: el resto de la API devuelve JSON)
+	app.use(
+		helmet({
+			contentSecurityPolicy: { directives: { connectSrc: ["'self'", auth.emisor] } },
+			crossOriginOpenerPolicy: false,
+		}),
+	);
 	app.use(corsConLista(origenes));
 	app.use(limitePeticiones(limitePorMinuto));
 	app.use(express.json({ limit: "100kb" }));
@@ -58,7 +67,7 @@ export function crearApp({ limitePorMinuto = 100, origenes = ["http://localhost:
 	});
 	app.use("/docs", swaggerUi.serve, swaggerUi.setup(contrato));
 
-	// Ejercicio 1: autenticar(auth) en /tareas y /proyectos, ANTES del validador:
+	// Ejercicio 2: autenticar(auth) en /tareas y /proyectos, ANTES del validador:
 	// sin token, 401, y no un 400 que enseñe la forma del contrato.
 
 	// Lo que no cumpla el contrato no llega a las rutas
@@ -78,8 +87,8 @@ export function crearApp({ limitePorMinuto = 100, origenes = ["http://localhost:
 		res.json({ estado: "ok" });
 	});
 
-	// Ejercicio 2: exigirSegunMetodo("tareas") y exigirSegunMetodo("proyectos") delante de cada router
-	// Ejercicio 4: idempotencia() delante del router de tareas
+	// Ejercicio 4: exigirSegunMetodo("tareas") y exigirSegunMetodo("proyectos") delante de cada router
+	// Ejercicio 9 (reto): idempotencia() delante del router de tareas
 	app.use("/tareas", crearRutasTareas(new ServicioTareas(new RepositorioTareas())));
 	app.use("/proyectos", crearRutasProyectos());
 

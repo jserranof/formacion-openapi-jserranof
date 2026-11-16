@@ -16,7 +16,10 @@
 		"dev:s04": "tsx watch s04/src/server.ts",
 		"tipos:s04": "openapi-typescript s04/openapi.yaml -o s04/src/tipos/api.d.ts",
 		"mcp:s04": "tsx s04/src/servidor-mcp.ts",
-		"autorizacion": "npm --prefix ../docs/ejemplos/oauth-demo run autorizacion"
+		"autorizacion": "npm --prefix ../docs/ejemplos/oauth-demo run autorizacion",
+		"token:s04": "tsx s04/src/leer-token.ts",
+		"lint:s04": "tsx lint.ts s04",
+		"pruebas:s04": "vitest run --config s04/mis-pruebas/vitest.config.ts"
 	},
 	"engines": {
 		"node": ">=22.12"

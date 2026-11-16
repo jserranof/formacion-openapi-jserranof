@@ -49,7 +49,7 @@ repositorio) y el formador ve cómo vas.
 | S1 | [`s01/`](s01/README.md): explorar una API, verbos y códigos, `GET /salud`, listar, tipar, obtener uno con 404, un resumen y dos retos |
 | S2 | [`s02/`](s02/README.md): arreglar un diseño, el CRUD, el manejador de errores, validar con Zod, filtrar, ordenar y paginar, la cadena de middleware, límites y registro, y cuatro retos (405, el id, `Link` y el 500) |
 | S3 | [`s03/`](s03/README.md): leer un contrato, el contrato de `/tareas`, publicarlo y cumplirlo, tus pruebas y pruebas contra el contrato, «¿lo entendería un agente de IA?», proyectos contract-first, y cuatro retos (reutilizar, el lint con una regla propia, la cobertura del contrato y las pruebas de proyectos) |
-| S4 | [`s04/`](s04/README.md): JWT, permisos y BOLA, ETag, Idempotency-Key, y un servidor MCP para agentes |
+| S4 | [`s04/`](s04/README.md): leer un token, proteger la API con JWT, permisos por operación, la seguridad en el contrato, cada uno lo suyo (BOLA), ETag, un servidor MCP y la confirmación humana, y cuatro retos (tokens cortos y revocables, PKCE, `Idempotency-Key` y la inyección de instrucciones) |
 
 Cada sesión parte de la anterior **terminada**: si una sesión no te dio tiempo a acabarla,
 la siguiente empieza igual que para todos.

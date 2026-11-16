@@ -43,4 +43,18 @@ Límites del servidor de prueba, que en clase hay que decir en voz alta:
   Entra ID, Auth0) lo rechaza si la autorización se pidió con `code_challenge`.
 - El usuario es siempre `ana`, sin pantalla de inicio de sesión.
 
+Dos cosas que añade `src/servidor-autorizacion.ts` sobre `oauth2-mock-server` (probadas el
+15/11 en local):
+
+- **El preflight de CORS** admite `X-Requested-With`, que manda el botón «Authorize» de
+  Swagger UI. Sin eso, el navegador bloquea la petición del token («Failed to fetch»).
+- **`EMISOR`**: la URL que va en el `iss` de los tokens y en el descubrimiento. Por defecto,
+  `http://localhost:9000`. En un Codespace, la URL reenviada del puerto 9000 (sin probar
+  allí):
+
+```bash
+# desde docs/ejemplos/oauth-demo
+EMISOR=https://<tu-codespace>-9000.app.github.dev npm run autorizacion
+```
+
 Requiere Node 22.12 o superior (`oauth2-mock-server` 9 admite Node 22, 24 y 26).

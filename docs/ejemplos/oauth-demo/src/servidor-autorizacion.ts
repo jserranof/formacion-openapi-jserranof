@@ -1,5 +1,6 @@
 // Servidor de autorización de PRUEBA. Emite tokens firmados (RS256) y publica sus
 // claves en /jwks. Nunca en producción: no comprueba secretos de cliente ni usuarios.
+import { createServer } from "node:http";
 import { OAuth2Server, type MutableToken, type TokenRequestIncomingMessage } from "oauth2-mock-server";
 
 const PUERTO = Number(process.env.PUERTO_AUTORIZACION ?? 9000);
@@ -31,6 +32,23 @@ servidor.service.on("beforeTokenSigning", (token: MutableToken, req: TokenReques
 	token.payload.scope = pedidos.filter((s) => permitidos.includes(s)).join(" ");
 });
 
-await servidor.start(PUERTO, "localhost");
+// Se arranca con un servidor HTTP propio por una sola razón: el botón «Authorize» de Swagger UI
+// manda la cabecera X-Requested-With, y la CORS de oauth2-mock-server solo admite Content-Type y
+// Authorization, así que el navegador bloquea la petición del token. Aquí se contesta el preflight
+// y todo lo demás lo atiende oauth2-mock-server tal cual.
+// EMISOR permite usar una URL pública como «iss» (en un Codespace, la URL reenviada del puerto 9000).
+servidor.issuer.url = process.env.EMISOR ?? `http://localhost:${PUERTO}`;
+const manejador = servidor.service.requestHandler;
+createServer((req, res) => {
+	if (req.method === "OPTIONS") {
+		res.writeHead(204, {
+			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+			"Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
+		});
+		return res.end();
+	}
+	manejador(req, res);
+}).listen(PUERTO, process.env.EMISOR ? "0.0.0.0" : "localhost");
 console.log(`Servidor de autorización en ${servidor.issuer.url}`);
 console.log(`  Descubrimiento: ${servidor.issuer.url}/.well-known/openid-configuration`);

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
-// Ejercicio 4: Idempotency-Key en POST.
+// Ejercicio 9 (reto): Idempotency-Key en POST.
 //   - Sin cabecera, o si no es POST: next().
 //   - La primera vez: deja pasar y guarda la respuesta (status, cuerpo, Location) y una huella
 //     del cuerpo de la petición (createHash("sha256") de node:crypto). Pista: envuelve res.json.

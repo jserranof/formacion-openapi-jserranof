@@ -4,7 +4,7 @@ import { appDePrueba, bearer, token } from "./tokens.js";
 
 const total = async (app: ReturnType<typeof appDePrueba>, t: Record<string, string>) => (await request(app).get("/tareas").set(t)).body.total as number;
 
-describe("Ejercicio 4 · Idempotency-Key: repetir no duplica", () => {
+describe("Ejercicio 9 (reto) · Idempotency-Key: repetir no duplica", () => {
 	it("el mismo POST con la misma clave crea una sola tarea y devuelve la misma", async () => {
 		const app = appDePrueba();
 		const t = bearer(await token({ sub: "ana" }));

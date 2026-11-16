@@ -1,6 +1,5 @@
 import request from "supertest";
 import { describe, expect, it } from "vitest";
-import { leerContrato } from "./contrato.js";
 import { appDePrueba, bearer, token } from "./tokens.js";
 
 const sinAutenticar = (res: request.Response) => {
@@ -9,7 +8,7 @@ const sinAutenticar = (res: request.Response) => {
 	expect(res.headers["www-authenticate"], "un 401 dice cómo autenticarse: WWW-Authenticate: Bearer").toMatch(/^Bearer/);
 };
 
-describe("Ejercicio 1 · Proteger la API con JWT", () => {
+describe("Ejercicio 2 · Proteger la API con JWT", () => {
 	it("/salud sigue siendo pública", async () => {
 		expect((await request(appDePrueba()).get("/salud")).status).toBe(200);
 	});
@@ -40,15 +39,14 @@ describe("Ejercicio 1 · Proteger la API con JWT", () => {
 		sinAutenticar(await request(appDePrueba()).get("/tareas?inventado=1"));
 	});
 
-	it("con un token válido, 200", async () => {
-		expect((await request(appDePrueba()).get("/tareas").set(bearer(await token()))).status).toBe(200);
+	it("con un token válido, 200, y /proyectos también está protegido", async () => {
+		const app = appDePrueba();
+		expect((await request(app).get("/tareas").set(bearer(await token()))).status, "un token bueno pasa: ¿llamas a next()?").toBe(200);
+		sinAutenticar(await request(app).get("/proyectos"));
 	});
 
-	it("el contrato declara la seguridad (securitySchemes y security), y /salud sin ella", () => {
-		const c = leerContrato();
-		const esquemas = Object.values<{ type: string; scheme?: string }>(c.components?.securitySchemes ?? {});
-		expect(esquemas.some((e) => e.type === "oauth2" || (e.type === "http" && e.scheme === "bearer")), "declara un securityScheme oauth2 o http bearer").toBe(true);
-		expect(c.security?.length ?? 0, "aplica la seguridad a toda la API con «security» en la raíz").toBeGreaterThan(0);
-		expect(c.paths?.["/salud"]?.get?.security, "/salud es pública: security: []").toEqual([]);
+	it("el 401 de un token caducado lo dice en «detail»", async () => {
+		const res = await request(appDePrueba()).get("/tareas").set(bearer(await token({ caducaEn: Math.floor(Date.now() / 1000) - 60 })));
+		expect(res.body.detail, "di en «detail» que el token ha caducado: el cliente sabrá que tiene que pedir otro").toMatch(/caduc/i);
 	});
 });
