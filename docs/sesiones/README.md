@@ -10,6 +10,7 @@ Antes de S1: [puesta en marcha](puesta-en-marcha.md).
 | Sesión | Fecha | Tema | Diapositivas | PPTX | Referencia rápida |
 |---|---|---|---|---|---|
 | S1 | Lun 16/11 | HTTP y REST desde cero; primera API | [slides](s01-slides.md) | [pptx](presentaciones/s01-presentacion.pptx) | [pasos y código](s01-referencia-rapida.md) |
+| S2 | Mar 17/11 | Repaso exprés de JavaScript y TypeScript (para abrir la sesión) | [slides](s02-js-slides.md) | [pptx](presentaciones/s02-js-presentacion.pptx) | [pasos y código](s02-js-referencia-rapida.md) |
 | S2 | Mar 17/11 | CRUD completo, validación y errores | [slides](s02-slides.md) | [pptx](presentaciones/s02-presentacion.pptx) | [pasos y código](s02-referencia-rapida.md) |
 | S3 | Lun 23/11 | OpenAPI: el contrato primero y las pruebas | [slides](s03-slides.md) | [pptx](presentaciones/s03-presentacion.pptx) | [pasos y código](s03-referencia-rapida.md) |
 | S4 | Mar 24/11 | Seguridad, buenas prácticas y APIs para agentes de IA | [slides](s04-slides.md) | [pptx](presentaciones/s04-presentacion.pptx) | [pasos y código](s04-referencia-rapida.md) |

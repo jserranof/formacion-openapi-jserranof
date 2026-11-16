@@ -6,6 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"comprobar": "tsx comprobar.ts",
+		"patio": "tsx watch js/src/patio.ts",
 		"dev:s01": "tsx watch s01/src/server.ts",
 		"typecheck": "tsc --noEmit",
 		"dev:s02": "tsx watch s02/src/server.ts",
