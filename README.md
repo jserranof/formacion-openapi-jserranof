@@ -1,6 +1,6 @@
-# Formación APIs REST y OpenAPI con Node y TypeScript
+# Formación APIs REST, OpenAPI y testing de APIs
 
-Material del curso de diseño y desarrollo de APIs REST con OpenAPI, Node.js y TypeScript:
+Material del curso de APIs REST, Swagger/OpenAPI y testing de APIs:
 4 sesiones de 5 horas (20 h), del 16 al 24 de noviembre de 2026, de 9:00 a 14:00.
 Impartido por Alejandro Muñoz (Julditec).
 
@@ -8,8 +8,12 @@ Impartido por Alejandro Muñoz (Julditec).
 |---|---|---|---|
 | S1 | Lun 16 nov | HTTP y REST desde cero · Node y TypeScript · Primera API | [`docs/sesiones/`](docs/sesiones/README.md) |
 | S2 | Mar 17 nov | Diseño REST · CRUD completo · Validación · Errores · Middleware | [`docs/sesiones/`](docs/sesiones/README.md) |
-| S3 | Lun 23 nov | OpenAPI: el contrato primero · Swagger · Tipos generados · Pruebas | [`docs/sesiones/`](docs/sesiones/README.md) |
-| S4 | Mar 24 nov | JWT y OAuth 2 · Buenas prácticas de APIs modernas · APIs para agentes de IA (MCP) | [`docs/sesiones/`](docs/sesiones/README.md) |
+| S3 | Lun 23 nov | Testing: del contrato OpenAPI a los casos de prueba · Swagger UI | [`s03-qa.pdf`](docs/sesiones/presentaciones/s03-qa.pdf) · [API de Sorteos](docs/ejemplos/api-sorteos/README.md) |
+| S4 | Mar 24 nov | Testing: seguridad (JWT y OAuth2) · ReadyAPI · CI/CD · Trazabilidad | [`s04-qa.pdf`](docs/sesiones/presentaciones/s04-qa.pdf) · [API de Sorteos](docs/ejemplos/api-sorteos/README.md) |
+
+Las sesiones 3 y 4 se centran en probar APIs, sin programar, sobre la **API de Sorteos**
+(`docs/ejemplos/api-sorteos/`): se arranca con `./arrancar.sh` y sus prácticas están en
+`practicas/`.
 
 ## Qué hay en el repositorio
 

@@ -1,0 +1,7 @@
+ID;Caso;Cómo;Esperado;Resultado estable;Resultado candidata;Evidencia
+CS-01;Sin credencial;GET /apuestas sin cabecera Authorization;401;;;
+CS-02;Token manipulado;GET /apuestas con un carácter del token cambiado;401;;;
+CS-03;Token caducado;GET /apuestas con el token de npm run token:caducado;401;;;
+CS-04;Secreto incorrecto;POST /oauth/token con client_secret erróneo;401 invalid_client;;;
+CS-05;Permiso insuficiente;POST /apuestas con el token de luis o de app-consulta;403;;;
+CS-06;Datos de otro usuario;GET /apuestas/3 con el token de ana;404;;;
