@@ -48,6 +48,9 @@ npm run token:caducado
 
 ## Si trabajas con SoapUI desde tu equipo
 
-SoapUI se ejecuta en tu equipo, fuera del codespace, así que tiene que poder llegar a la API.
-`arrancar.sh` hace públicos los puertos 3000 y 3001. Si avisa de que no ha podido, hazlo a
-mano: pestaña **PORTS** → clic derecho en el puerto → **Port Visibility** → **Public**.
+ReadyAPI y SoapUI se ejecutan en tu equipo, fuera del codespace, así que tienen que poder llegar
+a la API: haz públicos los puertos 3000 y 3001 en la pestaña **PUERTOS** → clic derecho en la
+fila del puerto → **Visibilidad del puerto** → **Public**. Después importa el contrato desde la
+dirección `…-3000.app.github.dev/openapi.json` (ReadyAPI) o `/swagger2.json` (SoapUI) que
+muestra `arrancar.sh`. Los datos son ficticios; al cerrar el codespace los puertos dejan de
+estar accesibles.

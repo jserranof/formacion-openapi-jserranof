@@ -19,9 +19,15 @@ for puerto in 3000 3001; do
 done
 
 if [[ -n "${CODESPACE_NAME:-}" ]]; then
-	# En el Codespace, los puertos se hacen públicos para que SoapUI (en tu equipo) llegue a la API
-	gh codespace ports visibility 3000:public 3001:public -c "$CODESPACE_NAME" >/dev/null 2>&1 \
-		|| echo "Aviso: no se pudieron hacer públicos los puertos. Hazlo en la pestaña PORTS (clic derecho → Port Visibility → Public)."
+	# ReadyAPI o SoapUI, en tu equipo, solo llegan a la API si los puertos son públicos
+	if ! { command -v gh >/dev/null && gh codespace ports visibility 3000:public 3001:public -c "$CODESPACE_NAME" >/dev/null 2>&1; }; then
+		cat <<'AVISO'
+
+  Para usar ReadyAPI o SoapUI desde tu equipo, haz públicos los puertos 3000 y 3001:
+  pestaña PUERTOS → clic derecho en la fila del puerto → Visibilidad del puerto → Public
+  (en inglés: PORTS → Port Visibility → Public). Para Swagger UI no hace falta.
+AVISO
+	fi
 	base="https://$CODESPACE_NAME"
 	dominio="${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN:-app.github.dev}"
 	estable="$base-3000.$dominio"
