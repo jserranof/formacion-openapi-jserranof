@@ -1,0 +1,3 @@
+ID;Título;Requisito;Tipo (positivo / negativo / límite / seguridad);Precondición;Operación;Entrada (parámetros o cuerpo);Esperado: código;Esperado: cuerpo o esquema;Resultado estable (pasa / falla);Resultado candidata (pasa / falla);Evidencia (curl y respuesta)
+CP-01;Apuesta válida en sorteo abierto;REQ-03;positivo;Token de ana;POST /apuestas;{"sorteoId": 4, "numeros": [3,12,21,30,39,48]};201;Apuesta con estado activa e importe 0.5;;;
+CP-02;;;;;;;;;;;

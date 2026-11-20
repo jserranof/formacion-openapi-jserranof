@@ -1,0 +1,4 @@
+ID;Requisito;Origen en el contrato (operación, campo o respuesta);Tipo (éxito / error)
+REQ-01;Se pueden listar los sorteos filtrando por estado;GET /sorteos · parámetro estado;éxito
+REQ-02;Un sorteo que no existe responde 404;GET /sorteos/{id} · respuesta 404;error
+REQ-03;;;

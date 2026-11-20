@@ -1,0 +1,266 @@
+# El mismo contrato que openapi.yaml, escrito en Swagger 2.0 para las herramientas que
+# solo leen esa versión (SoapUI Open Source). La API lo sirve en /swagger2.json con el host
+# de cada instancia ya puesto.
+swagger: "2.0"
+info:
+  title: API de Sorteos (prácticas)
+  version: 1.0.0
+  description: API ficticia de sorteos y apuestas para las prácticas de testing del curso.
+basePath: /
+consumes: [application/json]
+produces: [application/json, application/problem+json]
+securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+    description: "Escribe «Bearer » seguido del token de POST /auth/token o /oauth/token"
+paths:
+  /salud:
+    get:
+      tags: [Sistema]
+      operationId: comprobarSalud
+      summary: Comprueba que la API está viva
+      responses:
+        "200":
+          description: La API responde
+          schema:
+            type: object
+            required: [estado, version]
+            properties:
+              estado: { type: string }
+              version: { type: string }
+  /auth/token:
+    post:
+      tags: [Autenticación]
+      operationId: obtenerToken
+      summary: Obtiene un token de acceso (JWT) con usuario y clave
+      parameters:
+        - name: credenciales
+          in: body
+          required: true
+          schema:
+            type: object
+            required: [usuario, clave]
+            properties:
+              usuario: { type: string, example: ana }
+              clave: { type: string, example: ana-practicas }
+      responses:
+        "200":
+          description: Token emitido. Caduca a los 30 minutos.
+          schema: { $ref: "#/definitions/Token" }
+        "400": { description: Algún dato no es válido, schema: { $ref: "#/definitions/Problema" } }
+        "401": { description: Usuario o clave incorrectos, schema: { $ref: "#/definitions/Problema" } }
+  /oauth/token:
+    post:
+      tags: [Autenticación]
+      operationId: obtenerTokenOAuth2
+      summary: "OAuth2 Client Credentials: una aplicación obtiene un token en su nombre"
+      consumes: [application/x-www-form-urlencoded]
+      parameters:
+        - { name: grant_type, in: formData, required: true, type: string, enum: [client_credentials] }
+        - { name: client_id, in: formData, required: true, type: string }
+        - { name: client_secret, in: formData, required: true, type: string }
+        - { name: scope, in: formData, required: false, type: string }
+      responses:
+        "200":
+          description: Token emitido. Caduca a los 30 minutos.
+          schema: { $ref: "#/definitions/Token" }
+        "400": { description: grant_type o scope no válidos }
+        "401": { description: client_id o client_secret incorrectos }
+  /sorteos:
+    get:
+      tags: [Sorteos]
+      operationId: listarSorteos
+      summary: Lista los sorteos, con filtro opcional por estado
+      parameters:
+        - name: estado
+          in: query
+          required: false
+          type: string
+          enum: [abierto, cerrado, celebrado]
+      responses:
+        "200":
+          description: Sorteos que cumplen el filtro
+          schema:
+            type: object
+            required: [items, total]
+            properties:
+              items:
+                type: array
+                items: { $ref: "#/definitions/Sorteo" }
+              total: { type: integer, minimum: 0 }
+        "400": { description: Algún dato no es válido, schema: { $ref: "#/definitions/Problema" } }
+  /sorteos/{id}:
+    get:
+      tags: [Sorteos]
+      operationId: obtenerSorteo
+      summary: Obtiene un sorteo
+      parameters:
+        - { name: id, in: path, required: true, type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: El sorteo
+          schema: { $ref: "#/definitions/Sorteo" }
+        "400": { description: Algún dato no es válido, schema: { $ref: "#/definitions/Problema" } }
+        "404": { description: El sorteo no existe, schema: { $ref: "#/definitions/Problema" } }
+  /sorteos/{id}/resultado:
+    get:
+      tags: [Sorteos]
+      operationId: obtenerResultado
+      summary: Obtiene la combinación ganadora de un sorteo celebrado
+      parameters:
+        - { name: id, in: path, required: true, type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: El resultado del sorteo
+          schema: { $ref: "#/definitions/Resultado" }
+        "400": { description: Algún dato no es válido, schema: { $ref: "#/definitions/Problema" } }
+        "404": { description: El sorteo no existe o todavía no se ha celebrado, schema: { $ref: "#/definitions/Problema" } }
+  /apuestas:
+    get:
+      tags: [Apuestas]
+      operationId: listarMisApuestas
+      summary: Lista las apuestas del usuario autenticado
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Las apuestas del usuario
+          schema:
+            type: object
+            required: [items, total]
+            properties:
+              items:
+                type: array
+                items: { $ref: "#/definitions/Apuesta" }
+              total: { type: integer, minimum: 0 }
+        "401": { description: "Falta el token, no es válido o ha caducado", schema: { $ref: "#/definitions/Problema" } }
+    post:
+      tags: [Apuestas]
+      operationId: crearApuesta
+      summary: Registra una apuesta en un sorteo abierto
+      description: Una apuesta son 6 números distintos entre 1 y 49. Necesita el permiso apuestas:escribir.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: apuesta
+          in: body
+          required: true
+          schema: { $ref: "#/definitions/ApuestaNueva" }
+      responses:
+        "201":
+          description: Apuesta registrada
+          headers:
+            Location: { type: string, description: Dirección de la apuesta creada }
+          schema: { $ref: "#/definitions/Apuesta" }
+        "400": { description: Algún dato no es válido, schema: { $ref: "#/definitions/Problema" } }
+        "401": { description: "Falta el token, no es válido o ha caducado", schema: { $ref: "#/definitions/Problema" } }
+        "403": { description: El token no tiene el permiso que hace falta, schema: { $ref: "#/definitions/Problema" } }
+        "404": { description: El sorteo no existe, schema: { $ref: "#/definitions/Problema" } }
+        "409": { description: El sorteo no admite apuestas, schema: { $ref: "#/definitions/Problema" } }
+  /apuestas/{id}:
+    get:
+      tags: [Apuestas]
+      operationId: obtenerApuesta
+      summary: Obtiene una apuesta del usuario autenticado
+      description: Una apuesta de otro usuario responde 404, como si no existiera.
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: id, in: path, required: true, type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: La apuesta
+          schema: { $ref: "#/definitions/Apuesta" }
+        "400": { description: Algún dato no es válido, schema: { $ref: "#/definitions/Problema" } }
+        "401": { description: "Falta el token, no es válido o ha caducado", schema: { $ref: "#/definitions/Problema" } }
+        "404": { description: La apuesta no existe, schema: { $ref: "#/definitions/Problema" } }
+    delete:
+      tags: [Apuestas]
+      operationId: anularApuesta
+      summary: Anula una apuesta mientras su sorteo sigue abierto
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: id, in: path, required: true, type: integer, minimum: 1 }
+      responses:
+        "204": { description: Apuesta anulada }
+        "400": { description: Algún dato no es válido, schema: { $ref: "#/definitions/Problema" } }
+        "401": { description: "Falta el token, no es válido o ha caducado", schema: { $ref: "#/definitions/Problema" } }
+        "403": { description: El token no tiene el permiso que hace falta, schema: { $ref: "#/definitions/Problema" } }
+        "404": { description: La apuesta no existe, schema: { $ref: "#/definitions/Problema" } }
+        "409": { description: El sorteo ya no admite anular apuestas, schema: { $ref: "#/definitions/Problema" } }
+definitions:
+  Sorteo:
+    type: object
+    required: [id, nombre, fecha, estado, precioApuesta, bote]
+    properties:
+      id: { type: integer }
+      nombre: { type: string }
+      fecha: { type: string, format: date-time }
+      estado: { type: string, enum: [abierto, cerrado, celebrado] }
+      precioApuesta: { type: number, minimum: 0 }
+      bote: { type: number, minimum: 0 }
+  Resultado:
+    type: object
+    required: [sorteoId, combinacion, complementario, publicadoEn]
+    properties:
+      sorteoId: { type: integer }
+      combinacion:
+        type: array
+        minItems: 6
+        maxItems: 6
+        uniqueItems: true
+        items: { type: integer, minimum: 1, maximum: 49 }
+      complementario: { type: integer, minimum: 1, maximum: 49 }
+      publicadoEn: { type: string, format: date-time }
+  ApuestaNueva:
+    type: object
+    required: [sorteoId, numeros]
+    properties:
+      sorteoId: { type: integer, minimum: 1, example: 4 }
+      numeros:
+        type: array
+        minItems: 6
+        maxItems: 6
+        uniqueItems: true
+        items: { type: integer, minimum: 1, maximum: 49 }
+        example: [3, 12, 21, 30, 39, 48]
+  Apuesta:
+    type: object
+    required: [id, sorteoId, numeros, importe, estado, creadaEn]
+    properties:
+      id: { type: integer }
+      sorteoId: { type: integer }
+      numeros:
+        type: array
+        minItems: 6
+        maxItems: 6
+        uniqueItems: true
+        items: { type: integer, minimum: 1, maximum: 49 }
+      importe: { type: number, minimum: 0 }
+      estado: { type: string, enum: [activa, anulada] }
+      creadaEn: { type: string, format: date-time }
+  Token:
+    type: object
+    required: [access_token, token_type, expires_in, scope]
+    properties:
+      access_token: { type: string }
+      token_type: { type: string, enum: [Bearer] }
+      expires_in: { type: integer }
+      scope: { type: string }
+  Problema:
+    type: object
+    required: [title, status]
+    properties:
+      title: { type: string }
+      status: { type: integer }
+      detail: { type: string }
+      errores:
+        type: array
+        items:
+          type: object
+          properties:
+            campo: { type: string }
+            motivo: { type: string }

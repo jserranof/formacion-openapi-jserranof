@@ -1,0 +1,406 @@
+openapi: 3.0.3
+info:
+  title: API de Sorteos (prácticas)
+  version: 1.0.0
+  description: |
+    API ficticia de sorteos y apuestas para las prácticas de testing del curso.
+    Los datos son inventados y se reinician cada vez que se arranca la API.
+
+    **Cómo autenticarse:** pide un token en `POST /auth/token` con uno de los usuarios
+    de prueba y pégalo en el botón «Authorize».
+
+    | Usuario | Clave | Permisos |
+    |---|---|---|
+    | ana | ana-practicas | `apuestas:leer` y `apuestas:escribir` |
+    | luis | luis-practicas | solo `apuestas:leer` |
+
+    **OAuth2 (Client Credentials):** en «Authorize», sección `oauth2`, con una de estas aplicaciones.
+
+    | client_id | client_secret | Permisos |
+    |---|---|---|
+    | app-consulta | secreto-consulta | `apuestas:leer` |
+    | app-gestion | secreto-gestion | `apuestas:leer` y `apuestas:escribir` |
+servers:
+  - url: /
+    description: Esta instancia de la API
+tags:
+  - name: Sistema
+  - name: Autenticación
+  - name: Sorteos
+    description: Consulta pública de sorteos y resultados
+  - name: Apuestas
+    description: Apuestas del usuario autenticado
+paths:
+  /salud:
+    get:
+      tags: [Sistema]
+      operationId: comprobarSalud
+      summary: Comprueba que la API está viva
+      responses:
+        "200":
+          description: La API responde
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [estado, version]
+                properties:
+                  estado: { type: string, example: ok }
+                  version: { type: string, example: estable }
+  /auth/token:
+    post:
+      tags: [Autenticación]
+      operationId: obtenerToken
+      summary: Obtiene un token de acceso (JWT) con usuario y clave
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [usuario, clave]
+              properties:
+                usuario: { type: string, example: ana }
+                clave: { type: string, example: ana-practicas }
+      responses:
+        "200":
+          description: Token emitido. Caduca a los 30 minutos.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Token" }
+        "400": { $ref: "#/components/responses/DatosNoValidos" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+  /oauth/token:
+    post:
+      tags: [Autenticación]
+      operationId: obtenerTokenOAuth2
+      summary: "OAuth2 Client Credentials: una aplicación obtiene un token en su nombre"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [grant_type, client_id, client_secret]
+              properties:
+                grant_type: { type: string, enum: [client_credentials] }
+                client_id: { type: string, example: app-consulta }
+                client_secret: { type: string, example: secreto-consulta }
+                scope:
+                  type: string
+                  description: Permisos pedidos, separados por espacios. Vacío = todos los del cliente
+                  example: apuestas:leer
+      responses:
+        "200":
+          description: Token emitido. Caduca a los 30 minutos.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Token" }
+        "400":
+          description: grant_type o scope no válidos
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorOAuth2" }
+        "401":
+          description: client_id o client_secret incorrectos
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorOAuth2" }
+  /sorteos:
+    get:
+      tags: [Sorteos]
+      operationId: listarSorteos
+      summary: Lista los sorteos, con filtro opcional por estado
+      parameters:
+        - name: estado
+          in: query
+          required: false
+          schema: { $ref: "#/components/schemas/EstadoSorteo" }
+      responses:
+        "200":
+          description: Sorteos que cumplen el filtro
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, total]
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/Sorteo" }
+                  total: { type: integer, minimum: 0 }
+        "400": { $ref: "#/components/responses/DatosNoValidos" }
+  /sorteos/{id}:
+    get:
+      tags: [Sorteos]
+      operationId: obtenerSorteo
+      summary: Obtiene un sorteo
+      parameters:
+        - $ref: "#/components/parameters/IdSorteo"
+      responses:
+        "200":
+          description: El sorteo
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Sorteo" }
+        "400": { $ref: "#/components/responses/DatosNoValidos" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+  /sorteos/{id}/resultado:
+    get:
+      tags: [Sorteos]
+      operationId: obtenerResultado
+      summary: Obtiene la combinación ganadora de un sorteo celebrado
+      parameters:
+        - $ref: "#/components/parameters/IdSorteo"
+      responses:
+        "200":
+          description: El resultado del sorteo
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Resultado" }
+        "400": { $ref: "#/components/responses/DatosNoValidos" }
+        "404":
+          description: El sorteo no existe o todavía no se ha celebrado
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/Problema" }
+  /apuestas:
+    get:
+      tags: [Apuestas]
+      operationId: listarMisApuestas
+      summary: Lista las apuestas del usuario autenticado
+      security:
+        - bearerAuth: []
+        - oauth2: [apuestas:leer]
+      responses:
+        "200":
+          description: Las apuestas del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, total]
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/Apuesta" }
+                  total: { type: integer, minimum: 0 }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+    post:
+      tags: [Apuestas]
+      operationId: crearApuesta
+      summary: Registra una apuesta en un sorteo abierto
+      description: |
+        Una apuesta son 6 números distintos entre 1 y 49. El importe es el precio del
+        sorteo. Necesita el permiso `apuestas:escribir`.
+      security:
+        - bearerAuth: []
+        - oauth2: [apuestas:escribir]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ApuestaNueva" }
+      responses:
+        "201":
+          description: Apuesta registrada
+          headers:
+            Location:
+              description: Dirección de la apuesta creada
+              schema: { type: string, example: /apuestas/1 }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Apuesta" }
+        "400": { $ref: "#/components/responses/DatosNoValidos" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/SinPermiso" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+        "409": { $ref: "#/components/responses/Conflicto" }
+  /apuestas/{id}:
+    get:
+      tags: [Apuestas]
+      operationId: obtenerApuesta
+      summary: Obtiene una apuesta del usuario autenticado
+      description: Una apuesta de otro usuario responde 404, como si no existiera.
+      security:
+        - bearerAuth: []
+        - oauth2: [apuestas:leer]
+      parameters:
+        - $ref: "#/components/parameters/IdApuesta"
+      responses:
+        "200":
+          description: La apuesta
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Apuesta" }
+        "400": { $ref: "#/components/responses/DatosNoValidos" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+    delete:
+      tags: [Apuestas]
+      operationId: anularApuesta
+      summary: Anula una apuesta mientras su sorteo sigue abierto
+      description: Necesita el permiso `apuestas:escribir`.
+      security:
+        - bearerAuth: []
+        - oauth2: [apuestas:escribir]
+      parameters:
+        - $ref: "#/components/parameters/IdApuesta"
+      responses:
+        "204":
+          description: Apuesta anulada
+        "400": { $ref: "#/components/responses/DatosNoValidos" }
+        "401": { $ref: "#/components/responses/NoAutenticado" }
+        "403": { $ref: "#/components/responses/SinPermiso" }
+        "404": { $ref: "#/components/responses/NoEncontrado" }
+        "409": { $ref: "#/components/responses/Conflicto" }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+          scopes:
+            apuestas:leer: Consultar las apuestas propias
+            apuestas:escribir: Registrar y anular apuestas
+  parameters:
+    IdSorteo:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1, example: 1 }
+    IdApuesta:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1, example: 1 }
+  schemas:
+    EstadoSorteo:
+      type: string
+      enum: [abierto, cerrado, celebrado]
+      description: |
+        abierto: admite apuestas · cerrado: ya no admite apuestas, pendiente de celebrar ·
+        celebrado: tiene resultado
+    Sorteo:
+      type: object
+      required: [id, nombre, fecha, estado, precioApuesta, bote]
+      properties:
+        id: { type: integer, example: 1 }
+        nombre: { type: string, example: Sorteo Semanal 47 }
+        fecha: { type: string, format: date-time, example: "2026-11-28T21:30:00Z" }
+        estado: { $ref: "#/components/schemas/EstadoSorteo" }
+        precioApuesta:
+          type: number
+          minimum: 0
+          description: Precio de una apuesta, en euros
+          example: 1.5
+        bote:
+          type: number
+          minimum: 0
+          description: Bote del sorteo, en euros
+          example: 3000000
+    Resultado:
+      type: object
+      required: [sorteoId, combinacion, complementario, publicadoEn]
+      properties:
+        sorteoId: { type: integer, example: 1 }
+        combinacion:
+          type: array
+          minItems: 6
+          maxItems: 6
+          uniqueItems: true
+          items: { type: integer, minimum: 1, maximum: 49 }
+          example: [4, 11, 19, 23, 37, 45]
+        complementario: { type: integer, minimum: 1, maximum: 49, example: 8 }
+        publicadoEn: { type: string, format: date-time }
+    ApuestaNueva:
+      type: object
+      required: [sorteoId, numeros]
+      properties:
+        sorteoId: { type: integer, minimum: 1, example: 3 }
+        numeros:
+          type: array
+          description: 6 números distintos entre 1 y 49
+          minItems: 6
+          maxItems: 6
+          uniqueItems: true
+          items: { type: integer, minimum: 1, maximum: 49 }
+          example: [3, 12, 21, 30, 39, 48]
+    Apuesta:
+      type: object
+      required: [id, sorteoId, numeros, importe, estado, creadaEn]
+      properties:
+        id: { type: integer, example: 1 }
+        sorteoId: { type: integer, example: 3 }
+        numeros:
+          type: array
+          minItems: 6
+          maxItems: 6
+          uniqueItems: true
+          items: { type: integer, minimum: 1, maximum: 49 }
+          description: Los números apostados, ordenados de menor a mayor
+        importe: { type: number, minimum: 0, example: 1.5 }
+        estado: { type: string, enum: [activa, anulada] }
+        creadaEn: { type: string, format: date-time }
+    Token:
+      type: object
+      required: [access_token, token_type, expires_in, scope]
+      properties:
+        access_token: { type: string }
+        token_type: { type: string, enum: [Bearer] }
+        expires_in: { type: integer, description: Segundos hasta que caduca, example: 1800 }
+        scope: { type: string, example: "apuestas:leer apuestas:escribir" }
+    ErrorOAuth2:
+      type: object
+      description: Error con el formato de OAuth2 (RFC 6749)
+      required: [error]
+      properties:
+        error: { type: string, example: invalid_client }
+        error_description: { type: string }
+    Problema:
+      type: object
+      description: Error con formato problem+json (RFC 9457)
+      required: [title, status]
+      properties:
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        errores:
+          type: array
+          description: Un elemento por cada dato no válido
+          items:
+            type: object
+            properties:
+              campo: { type: string }
+              motivo: { type: string }
+  responses:
+    DatosNoValidos:
+      description: Algún dato de la petición no es válido
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }
+    NoAutenticado:
+      description: Falta el token, no es válido o ha caducado
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }
+    SinPermiso:
+      description: El token no tiene el permiso que hace falta
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }
+    NoEncontrado:
+      description: El recurso no existe
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }
+    Conflicto:
+      description: El sorteo no admite esta operación en su estado actual
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problema" }

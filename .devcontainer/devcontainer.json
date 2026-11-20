@@ -5,9 +5,10 @@
 		"cpus": 2
 	},
 	"postCreateCommand": "bash .devcontainer/instalar.sh",
-	"forwardPorts": [3000, 9000],
+	"forwardPorts": [3000, 3001, 9000],
 	"portsAttributes": {
-		"3000": { "label": "API" },
+		"3000": { "label": "API (estable)" },
+		"3001": { "label": "API (candidata)" },
 		"9000": { "label": "Servidor de autorización (S4)" }
 	},
 	"customizations": {

@@ -1,0 +1,28 @@
+# Fragmento A: ¿qué versión es? ¿Qué línea lo delata?
+openapi: 3.1.0
+info:
+  title: Resultados
+  version: 2.0.0
+paths:
+  /resultados/{id}:
+    get:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: El resultado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  complementario:
+                    type: [integer, "null"]
+webhooks:
+  resultadoPublicado:
+    post:
+      responses:
+        "200": { description: Recibido }

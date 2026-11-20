@@ -1,0 +1,23 @@
+# Fragmento B: ¿qué versión es? ¿Qué línea lo delata?
+swagger: "2.0"
+info:
+  title: Puntos de venta
+  version: 1.0.0
+host: api.ejemplo.com
+basePath: /v1
+paths:
+  /puntos:
+    post:
+      parameters:
+        - name: punto
+          in: body
+          required: true
+          schema: { $ref: "#/definitions/Punto" }
+      responses:
+        "201": { description: Creado }
+definitions:
+  Punto:
+    type: object
+    required: [nombre]
+    properties:
+      nombre: { type: string }

@@ -1,0 +1,25 @@
+# Fragmento C: ¿qué versión es? ¿Qué línea lo delata?
+openapi: 3.0.3
+info:
+  title: Boletos
+  version: 1.4.0
+servers:
+  - url: https://api.ejemplo.com/v1
+paths:
+  /boletos:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Boleto" }
+      responses:
+        "201": { description: Creado }
+components:
+  schemas:
+    Boleto:
+      type: object
+      properties:
+        observaciones:
+          type: string
+          nullable: true
