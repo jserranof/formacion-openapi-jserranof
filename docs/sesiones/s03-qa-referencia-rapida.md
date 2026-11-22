@@ -81,8 +81,11 @@ Datos con los que arranca la API (se reinician cada vez que la arrancas):
 
 ## §2 · Práctica 1: ¿qué versión es? (25 min)
 
-1. En el explorador de VS Code abre los tres ficheros de `practicas/s03/versiones/`:
-   `fragmento-a.yaml`, `fragmento-b.yaml` y `fragmento-c.yaml`.
+Se responde en la plantilla **`practicas/s03/versiones/respuestas.md`**: ábrela en VS Code y
+escribe donde están los `…`. Tiene tres partes.
+
+1. **Parte 1.** En la misma carpeta abre `fragmento-a.yaml`, `fragmento-b.yaml` y
+   `fragmento-c.yaml`.
 2. Para cada uno, anota su versión y la línea que la delata:
 
    | Si la primera línea es… | Es… |
@@ -91,12 +94,12 @@ Datos con los que arranca la API (se reinician cada vez que la arrancas):
    | `openapi: 3.0.x` | OpenAPI 3.0 |
    | `openapi: 3.1.x` | OpenAPI 3.1 |
 
-3. Abre <https://editor.swagger.io>. Abre `openapi.yaml` en VS Code, selecciónalo todo
+3. **Parte 2.** Abre <https://editor.swagger.io>. Abre `openapi.yaml` en VS Code, selecciónalo todo
    (Ctrl+A), cópialo (Ctrl+C) y pégalo en la parte izquierda del editor, sustituyendo lo
    que hubiera.
-4. En la parte derecha, despliega `POST /apuestas`: ¿qué datos pide y qué respuestas puede
-   devolver?
-5. Migración: en el fragmento 2.0, señala qué cambiaría al pasarlo a 3.x. Guíate por la
+4. En la parte derecha, despliega `POST /apuestas`: ¿qué datos pide, con qué reglas, qué
+   respuestas puede devolver y si pide autenticación?
+5. **Parte 3.** Migración: en el fragmento 2.0, señala qué cambiaría al pasarlo a 3.x. Guíate por la
    tabla «Migrar de 2.0 a 3.x» de la presentación: `host`/`basePath` → `servers`,
    `in: body` → `requestBody`, `definitions` → `components/schemas`…
 
