@@ -8,8 +8,8 @@ Impartido por Alejandro Muñoz (Julditec).
 |---|---|---|---|
 | S1 | Lun 16 nov | HTTP y REST desde cero · Node y TypeScript · Primera API | [`docs/sesiones/`](docs/sesiones/README.md) |
 | S2 | Mar 17 nov | Diseño REST · CRUD completo · Validación · Errores · Middleware | [`docs/sesiones/`](docs/sesiones/README.md) |
-| S3 | Lun 23 nov | Testing: del contrato OpenAPI a los casos de prueba · Swagger UI | [`s03-qa.pdf`](docs/sesiones/presentaciones/s03-qa.pdf) · [API de Sorteos](docs/ejemplos/api-sorteos/README.md) |
-| S4 | Mar 24 nov | Testing: seguridad (JWT y OAuth2) · ReadyAPI · CI/CD · Trazabilidad | [`s04-qa.pdf`](docs/sesiones/presentaciones/s04-qa.pdf) · [API de Sorteos](docs/ejemplos/api-sorteos/README.md) |
+| S3 | Lun 23 nov | Testing: del contrato OpenAPI a los casos de prueba · Swagger UI | [`s03-qa.pdf`](docs/sesiones/presentaciones/s03-qa.pdf) · [referencia rápida](docs/sesiones/s03-qa-referencia-rapida.md) · [API de Sorteos](docs/ejemplos/api-sorteos/README.md) |
+| S4 | Mar 24 nov | Testing: seguridad (JWT y OAuth2) · ReadyAPI · CI/CD · Trazabilidad | [`s04-qa.pdf`](docs/sesiones/presentaciones/s04-qa.pdf) · [referencia rápida](docs/sesiones/s04-qa-referencia-rapida.md) · [API de Sorteos](docs/ejemplos/api-sorteos/README.md) |
 
 Las sesiones 3 y 4 se centran en probar APIs, sin programar, sobre la **API de Sorteos**
 (`docs/ejemplos/api-sorteos/`): se arranca con `./arrancar.sh` y sus prácticas están en

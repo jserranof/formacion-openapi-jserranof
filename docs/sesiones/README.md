@@ -12,8 +12,9 @@ Antes de S1: [puesta en marcha](puesta-en-marcha.md).
 | S1 | Lun 16/11 | HTTP y REST desde cero; primera API | [slides](s01-slides.md) | [pptx](presentaciones/s01-presentacion.pptx) | [pasos y código](s01-referencia-rapida.md) |
 | S2 | Mar 17/11 | Repaso exprés de JavaScript y TypeScript (para abrir la sesión) | [slides](s02-js-slides.md) | [pptx](presentaciones/s02-js-presentacion.pptx) | [pasos y código](s02-js-referencia-rapida.md) |
 | S2 | Mar 17/11 | CRUD completo, validación y errores | [slides](s02-slides.md) | [pptx](presentaciones/s02-presentacion.pptx) | [pasos y código](s02-referencia-rapida.md) |
-| S3 | Lun 23/11 | OpenAPI: el contrato primero y las pruebas | [slides](s03-slides.md) | [pptx](presentaciones/s03-presentacion.pptx) | [pasos y código](s03-referencia-rapida.md) |
-| S4 | Mar 24/11 | Seguridad, buenas prácticas y APIs para agentes de IA | [slides](s04-slides.md) | [pptx](presentaciones/s04-presentacion.pptx) | [pasos y código](s04-referencia-rapida.md) |
+| S3 | Lun 23/11 | Testing: del contrato OpenAPI a los casos de prueba | [PDF](presentaciones/s03-qa.pdf) | — | [pasos y datos](s03-qa-referencia-rapida.md) |
+| S4 | Mar 24/11 | Testing: seguridad, ReadyAPI, automatización y trazabilidad | [PDF](presentaciones/s04-qa.pdf) | — | [pasos y datos](s04-qa-referencia-rapida.md) |
+| S3–S4 | | Anexo: repaso de HTTP, más técnicas, seguridad y ReadyAPI avanzado | [PDF](presentaciones/anexo-qa.pdf) | — | — |
 
 Cada `sNN-slides.md` es el contenido de la presentación, una diapositiva por sección
 `##`. Los `.pptx` se generan desde ese markdown, y su versión en PDF está en
@@ -32,6 +33,11 @@ el navegador](anexos/s02-anexo-slides.md). El de S3: [una guía de estilo como r
 lint, un cliente tipado con el contrato y code-first con Zod](anexos/s03-anexo-slides.md). El
 de S4: [webhooks firmados con HMAC, operaciones que tardan (202) y rotar las claves de
 firma](anexos/s04-anexo-slides.md).
+
+Las sesiones 3 y 4 se centran en probar APIs con la [API de Sorteos](../ejemplos/api-sorteos/README.md):
+su presentación está en PDF y su referencia rápida es `sNN-qa-referencia-rapida.md`. Los
+`s03-*` y `s04-*` sin `qa` son el material de desarrollo previsto antes; se conservan como
+consulta.
 
 Cada `sNN-referencia-rapida.md` recoge, sección a sección (§N), los pasos y el código
 exacto de todo lo que se hace en la sesión. Es lo que se pega en el chat durante la clase.
