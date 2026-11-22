@@ -12,7 +12,7 @@
 | 3 | `practicas/s03/requisitos.csv` | Práctica 2: tu tabla de requisitos |
 | 4 | Swagger UI | Probar una operación con «Try it out» |
 | 5 | Swagger UI | Pedir un token y usarlo con «Authorize» |
-| 6 | Swagger UI | Cuerpos de prueba listos para copiar |
+| 6 | Swagger UI | Cómo escribir un cuerpo de prueba |
 | 7 | Swagger UI de la candidata | Práctica 3: ¿qué incumple la candidata? |
 | 8 | `practicas/s03/casos.csv` y `matriz.csv` | Práctica 4: tu batería de casos |
 | 9 | Terminal | Guardar tu trabajo |
@@ -81,27 +81,20 @@ Datos con los que arranca la API (se reinician cada vez que la arrancas):
 
 ## §2 · Práctica 1: ¿qué versión es? (25 min)
 
-Se responde en la plantilla **`practicas/s03/versiones/respuestas.md`**: ábrela en VS Code y
-escribe donde están los `…`. Tiene tres partes.
+Todo se responde en la plantilla **`practicas/s03/versiones/respuestas.md`**: ábrela en VS
+Code y escribe donde están los `…`.
 
-1. **Parte 1.** En la misma carpeta abre `fragmento-a.yaml`, `fragmento-b.yaml` y
-   `fragmento-c.yaml`.
-2. Para cada uno, anota su versión y la línea que la delata:
-
-   | Si la primera línea es… | Es… |
-   |---|---|
-   | `swagger: "2.0"` | Swagger 2.0 |
-   | `openapi: 3.0.x` | OpenAPI 3.0 |
-   | `openapi: 3.1.x` | OpenAPI 3.1 |
-
-3. **Parte 2.** Abre <https://editor.swagger.io>. Abre `openapi.yaml` en VS Code, selecciónalo todo
-   (Ctrl+A), cópialo (Ctrl+C) y pégalo en la parte izquierda del editor, sustituyendo lo
-   que hubiera.
-4. En la parte derecha, despliega `POST /apuestas`: ¿qué datos pide, con qué reglas, qué
-   respuestas puede devolver y si pide autenticación?
-5. **Parte 3.** Migración: en el fragmento 2.0, señala qué cambiaría al pasarlo a 3.x. Guíate por la
-   tabla «Migrar de 2.0 a 3.x» de la presentación: `host`/`basePath` → `servers`,
-   `in: body` → `requestBody`, `definitions` → `components/schemas`…
+1. **Parte 1 (8 min).** Abre `fragmento-a.yaml`, `fragmento-b.yaml` y `fragmento-c.yaml`,
+   en la misma carpeta. Les falta la línea que dice la versión: dedúcela por su estructura
+   y apunta al menos dos líneas que lo demuestren. La tabla «Diferencias prácticas entre
+   versiones» de la presentación es tu chuleta.
+2. **Parte 2 (7 min).** Abre <https://editor.swagger.io>. Abre `openapi.yaml` en VS Code,
+   selecciónalo todo (Ctrl+A), cópialo (Ctrl+C) y pégalo en la parte izquierda del editor,
+   sustituyendo lo que hubiera. En la parte derecha, despliega `POST /apuestas` y su
+   esquema `ApuestaNueva` y contesta las preguntas de la plantilla.
+3. **Parte 3 (10 min).** Abre `fragmento-b-migrado.yaml`, una copia del fragmento B, y
+   reescríbelo en OpenAPI 3.0 tomando como modelo el fragmento C. Para comprobarlo, pégalo
+   en el editor: no debe marcar ningún error.
 
 Los datos son ficticios: no pasa nada por pegarlos en el editor online. Con contratos del
 trabajo, usa la herramienta que tengáis aprobada.
@@ -169,34 +162,17 @@ Authorize. Para cambiar de usuario: Authorize → **Logout** y pega el otro toke
 El mismo token vale para la estable y para la candidata, pero cada Swagger UI tiene su
 propio botón Authorize: hay que pegarlo en las dos.
 
-## §6 · Cuerpos de prueba listos para copiar
+## §6 · Cómo escribir un cuerpo de prueba
 
-Todos son para `POST /apuestas`, con el token de ana salvo que se diga otra cosa.
+`POST /apuestas` lleva un cuerpo JSON. Este es el de una apuesta válida en el sorteo 4:
 
-| Escenario | Cuerpo | Esperado según el contrato |
-|---|---|---|
-| Apuesta válida | `{"sorteoId": 4, "numeros": [3, 12, 21, 30, 39, 48]}` | 201 y cabecera `location` |
-| Un número repetido | `{"sorteoId": 4, "numeros": [1, 1, 2, 3, 4, 5]}` | 400 |
-| Solo cinco números | `{"sorteoId": 4, "numeros": [1, 2, 3, 4, 5]}` | 400 |
-| Siete números | `{"sorteoId": 4, "numeros": [1, 2, 3, 4, 5, 6, 7]}` | 400 |
-| Límite inferior fuera: 0 | `{"sorteoId": 4, "numeros": [0, 2, 3, 4, 5, 6]}` | 400 |
-| Límite superior fuera: 50 | `{"sorteoId": 4, "numeros": [1, 2, 3, 4, 5, 50]}` | 400 |
-| Límites dentro: 1 y 49 | `{"sorteoId": 4, "numeros": [1, 2, 3, 4, 5, 49]}` | 201 |
-| Sorteo cerrado | `{"sorteoId": 3, "numeros": [1, 2, 3, 4, 5, 6]}` | 409 |
-| Sorteo que no existe | `{"sorteoId": 99, "numeros": [1, 2, 3, 4, 5, 6]}` | 404 |
-| Sin permiso (token de luis) | `{"sorteoId": 4, "numeros": [1, 2, 3, 4, 5, 6]}` | 403 |
-| Sin token (Authorize → Logout) | cualquiera de los anteriores | 401 |
+```json
+{"sorteoId": 4, "numeros": [3, 12, 21, 30, 39, 48]}
+```
 
-Otras peticiones útiles:
-
-| Petición | Esperado |
-|---|---|
-| `GET /sorteos/5` | 200 con el sorteo 5 |
-| `GET /sorteos/99` | 404 con `application/problem+json` |
-| `GET /sorteos?estado=abierto` | 200 con los sorteos 4 y 5 |
-| `GET /sorteos?estado=otro` | 400 |
-| `GET /sorteos/1/resultado` | 200 con la combinación ganadora |
-| `GET /apuestas/3` con el token de ana | 404: la apuesta 3 es de luis |
+Para un caso negativo o de límite, copia ese cuerpo y cambia **solo un dato** cada vez: así,
+si la respuesta no es la esperada, sabes qué la ha provocado. Qué datos cambiar y qué
+debería responder la API lo sacas del contrato: es el trabajo de las prácticas.
 
 Cuando la API rechaza algo, responde en formato `application/problem+json`: `title`,
 `status`, `detail` y, si son datos no válidos, la lista `errores` con el campo que falla.
@@ -205,15 +181,13 @@ Cuando la API rechaza algo, responde en formato `application/problem+json`: `tit
 
 1. Abre la Swagger UI de la **candidata**: la dirección que acaba en `-3001…/docs`.
 2. Pide un token (§5) y pégalo en su Authorize.
-3. Recorre tus requisitos y pruébalos en la candidata. Los cuerpos de §6 te sirven.
+3. Recorre tus requisitos y pruébalos en la candidata.
 4. Si dudas de lo que debería pasar, lanza la misma petición en la estable.
-5. Por cada diferencia con el contrato, guarda el **curl** y la **respuesta**, y anota qué
-   requisito incumple.
+5. Apunta cada defecto en **`practicas/s03/defectos.csv`**: su requisito, lo que enviaste,
+   lo esperado según el contrato, lo obtenido, el curl y la respuesta, y su gravedad. La
+   fila DEF-01, el defecto del sorteo 99 que vemos juntos, va de ejemplo.
 
-Pista: no te quedes en los casos que funcionan. Prueba datos «malos», límites, otros
-usuarios y fíjate también en los tipos de los campos y en las cabeceras.
-
-**Entrega:** lista de defectos, cada uno con su requisito, el curl y la respuesta obtenida.
+No te quedes en los casos que funcionan: prueba también con datos «malos».
 
 ## §8 · Práctica 4: tu batería de casos (25 min)
 
@@ -223,19 +197,25 @@ Abre `practicas/s03/casos.csv`. La primera fila ya está hecha como ejemplo:
 CP-01;Apuesta válida en sorteo abierto;REQ-03;positivo;Token de ana;POST /apuestas;{"sorteoId": 4, "numeros": [3,12,21,30,39,48]};201;Apuesta con estado activa e importe 0.5;;;
 ```
 
-1. Aplica **partición de equivalencia** a los datos de `POST /apuestas`: un caso por
-   grupo (cantidad de números, rango, repetidos, estado del sorteo, token).
-2. Añade los **valores límite**: 0, 1, 49 y 50; 5, 6 y 7 números.
-3. Incluye casos que provoquen 400, 404 y 409.
+1. **Guiado: `POST /apuestas`.** Convierte en casos las tablas de partición de equivalencia
+   y de valores límite de la presentación: un caso por grupo y uno por cada valor límite.
+2. **Tú solo: `GET /sorteos/{id}` y `DELETE /apuestas/{id}`.** Aquí no hay tabla: busca en
+   el contrato sus parámetros, sus reglas y sus respuestas, y saca tú los grupos y los
+   límites. Piensa también en quién hace la petición y sobre qué datos (§1).
+3. Que haya al menos un caso por cada código de respuesta que declara el contrato para esas
+   operaciones.
 4. Ejecuta cada caso en las dos versiones y anota «pasa» o «falla» en sus columnas.
 5. Rellena `practicas/s03/matriz.csv`: cada requisito con sus casos y cuántos son
    positivos, negativos, de límite y de seguridad. Marca los requisitos sin casos: son
    huecos de cobertura.
 
+Anular una apuesta cambia los datos: si necesitas volver a los de partida, Ctrl+C y
+`./arrancar.sh`.
+
 El esperado de un caso tiene tres partes: **código**, **esquema** (qué campos y de qué
 tipo) y **datos** (qué valores).
 
-**Entrega:** al menos 12 casos y la matriz. Mañana esta batería se automatiza en ReadyAPI:
+**Entrega:** al menos 15 casos de las tres operaciones y la matriz. Mañana esta batería se automatiza en ReadyAPI:
 guárdala.
 
 ## §9 · Guardar tu trabajo

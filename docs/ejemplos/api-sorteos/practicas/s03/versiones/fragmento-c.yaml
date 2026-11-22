@@ -1,5 +1,5 @@
-# Fragmento C: ¿qué versión es? ¿Qué línea lo delata?
-openapi: 3.0.3
+# Fragmento C. Se ha borrado la línea que dice la versión de la especificación.
+# ¿Es Swagger 2.0, OpenAPI 3.0 u OpenAPI 3.1? Encuentra al menos dos pistas.
 info:
   title: Boletos
   version: 1.4.0

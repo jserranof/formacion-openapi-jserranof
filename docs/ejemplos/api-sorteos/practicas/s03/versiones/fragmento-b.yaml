@@ -1,5 +1,5 @@
-# Fragmento B: ¿qué versión es? ¿Qué línea lo delata?
-swagger: "2.0"
+# Fragmento B. Se ha borrado la línea que dice la versión de la especificación.
+# ¿Es Swagger 2.0, OpenAPI 3.0 u OpenAPI 3.1? Encuentra al menos dos pistas.
 info:
   title: Puntos de venta
   version: 1.0.0

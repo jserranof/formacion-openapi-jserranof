@@ -1,0 +1,25 @@
+# Parte 3 de la práctica 1: reescribe este fragmento (Swagger 2.0) en OpenAPI 3.0.
+# Modelo: fragmento-c.yaml. Cuando acabes, pégalo en https://editor.swagger.io: no debe
+# marcar ningún error. Los comentarios (líneas con #) puedes dejarlos o borrarlos.
+swagger: "2.0"
+info:
+  title: Puntos de venta
+  version: 1.0.0
+host: api.ejemplo.com
+basePath: /v1
+paths:
+  /puntos:
+    post:
+      parameters:
+        - name: punto
+          in: body
+          required: true
+          schema: { $ref: "#/definitions/Punto" }
+      responses:
+        "201": { description: Creado }
+definitions:
+  Punto:
+    type: object
+    required: [nombre]
+    properties:
+      nombre: { type: string }

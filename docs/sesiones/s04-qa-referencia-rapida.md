@@ -19,9 +19,8 @@
 | 10 | Terminal | Guardar tu trabajo |
 | 11 | | Si algo falla |
 
-Las rutas de ficheros son relativas a `docs/ejemplos/api-sorteos/`. Los usuarios, los
-datos de partida y los cuerpos de prueba están en la
-[referencia de la sesión 3](s03-qa-referencia-rapida.md) (§1 y §6).
+Las rutas de ficheros son relativas a `docs/ejemplos/api-sorteos/`. Los usuarios y los
+datos de partida están en la [referencia de la sesión 3](s03-qa-referencia-rapida.md), §1.
 
 ## §0 · Arrancar la API y hacer públicos los puertos
 
@@ -125,6 +124,10 @@ en la **candidata**. Todos con `GET /apuestas` salvo que se diga otra cosa:
 | CS-05 | Permiso insuficiente | `POST /apuestas` con el token de luis o de app-consulta | 403 |
 | CS-06 | Datos de otro usuario | `GET /apuestas/3` con el token de ana (la 3 es de luis) | 404 |
 
+Después **diseña dos casos más**, CS-07 y CS-08, en las filas vacías de la plantilla: otra
+forma de intentar entrar sin permiso o de ver lo que no es tuyo. Escribe cómo se lanza y qué
+debería responder según el contrato, y pruébalos también en las dos versiones.
+
 Anota el resultado en las dos columnas y, si falla, el curl y la respuesta en la columna de
 evidencia. Añade los casos que fallen a tu batería y a la matriz.
 
@@ -140,35 +143,25 @@ Antes: puertos 3000 y 3001 públicos (§0).
 
    Si tu ReadyAPI no acepta el 3.0, usa el mismo contrato en Swagger 2.0:
    `…-3000.app.github.dev/swagger2.json`.
-2. Crea una suite **«Apuestas»** con **6 casos** de tu batería de ayer. Los de la suite de
-   referencia: apuesta válida, número repetido, número 50, sorteo cerrado, sin permiso de
-   escritura (luis) y apuesta de otro usuario.
+2. Crea una suite **«Apuestas»** con **6 casos** de tu batería de ayer (`casos.csv`).
+   Elige casos variados: positivos, negativos, de límite y de seguridad.
 3. Cada caso de `/apuestas` necesita su token: §6.
 4. Añade a cada petición sus **aserciones**:
 
-   | Aserción | Para qué | Ejemplo |
-   |---|---|---|
-   | Valid HTTP Status Codes | El código esperado | `201`, `400`, `403`… |
-   | JsonPath Match | Un valor concreto | `$.estado` = `activa` |
-   | JsonPath Count | Cuántos elementos | `$.numeros` = 6 |
-   | Contains | Un texto en la respuesta | `No existe` |
-   | Swagger/OpenAPI Compliance | Que la respuesta cumple el contrato | Solo en ReadyAPI |
-   | Response SLA | Tiempo máximo | 500 ms |
+   | Aserción | Para qué |
+   |---|---|
+   | Valid HTTP Status Codes | El código esperado |
+   | JsonPath Match | Un valor concreto de la respuesta |
+   | JsonPath Count | Cuántos elementos tiene una lista |
+   | Contains | Un texto en la respuesta |
+   | Swagger/OpenAPI Compliance | Que la respuesta cumple el contrato (solo ReadyAPI) |
+   | Response SLA | Tiempo máximo de respuesta |
 
-5. Ejecuta la suite contra la estable: todo en **verde**.
+5. Ejecuta la suite contra la estable: todo en **verde**. Si algo sale en rojo en la
+   estable, revisa el caso: la estable es la referencia.
 6. Guarda el proyecto.
 
-Cuerpos para copiar (con `Content-Type: application/json`):
-
-```json
-{"sorteoId": 4, "numeros": [3, 12, 21, 30, 39, 48]}
-{"sorteoId": 4, "numeros": [1, 1, 2, 3, 4, 5]}
-{"sorteoId": 4, "numeros": [1, 2, 3, 4, 5, 50]}
-{"sorteoId": 3, "numeros": [1, 2, 3, 4, 5, 6]}
-```
-
-Aserción de script opcional, para comprobar que `precioApuesta` es un número en
-`GET /sorteos/{id}`:
+Aserción de script opcional (la de la presentación), para `GET /sorteos/{id}`:
 
 ```groovy
 import groovy.json.JsonSlurper
@@ -217,9 +210,9 @@ Comprueba los tres resultados: 200 con permiso, 401 sin token y 403 sin permiso.
    de la dirección de las peticiones.
 3. Ejecuta la **misma** suite contra la candidata.
 4. Compara: ¿qué casos pasan a rojo?
-5. Genera el informe de la ejecución de la candidata.
-
-**Entrega:** el informe y la decisión justificada: ¿se puede publicar la candidata?
+5. Genera el informe de la ejecución de la candidata y rellena
+   **`practicas/s04/decision-publicacion.md`**: resultados de las dos versiones, la decisión
+   (¿se puede publicar?) y qué defectos no detecta tu suite.
 
 ## §8 · Ejecutar la suite por línea de comandos
 

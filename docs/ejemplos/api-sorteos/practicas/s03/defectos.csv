@@ -1,0 +1,9 @@
+ID;Requisito que incumple;Operación y datos enviados;Esperado (según el contrato);Obtenido en la candidata;¿Y en la estable?;Evidencia (curl y respuesta);Gravedad (alta / media / baja)
+DEF-01;REQ-02;GET /sorteos/99;404 con problem+json;200 con cuerpo vacío {};404 (correcto);curl -X GET .../sorteos/99 → 200 {};media
+DEF-02;;;;;;;
+DEF-03;;;;;;;
+DEF-04;;;;;;;
+DEF-05;;;;;;;
+DEF-06;;;;;;;
+DEF-07;;;;;;;
+DEF-08;;;;;;;
