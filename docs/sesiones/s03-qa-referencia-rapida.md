@@ -8,7 +8,7 @@
 |---|---|---|
 | 0 | Terminal del codespace | Traer el material nuevo y arrancar la API |
 | 1 | Navegador | Direcciones, usuarios y datos de partida |
-| 2 | `practicas/s03/versiones` y Swagger Editor | Práctica 1: ¿qué versión es? |
+| 2 | `practicas/s03/versiones` y Swagger Editor | Las partes del contrato y práctica 1: ¿qué versión es? |
 | 3 | `practicas/s03/requisitos.csv` | Práctica 2: tu tabla de requisitos |
 | 4 | Swagger UI | Probar una operación con «Try it out» |
 | 5 | Swagger UI | Pedir un token y usarlo con «Authorize» |
@@ -81,6 +81,17 @@ Datos con los que arranca la API (se reinician cada vez que la arrancas):
 
 ## §2 · Práctica 1: ¿qué versión es? (25 min)
 
+Antes de empezar, el mapa del contrato. Un contrato OpenAPI empieza por la línea de la versión y
+tiene cuatro bloques principales (en VS Code, Ctrl+K Ctrl+0 lo pliega y solo se ven ellos):
+
+| Bloque | Qué contiene |
+|---|---|
+| `openapi` | La versión de la especificación (el formato del fichero) |
+| `info` | El nombre de la API, su descripción y la versión de la API |
+| `servers` | Dónde está la API |
+| `paths` | Las rutas y, en cada una, sus operaciones (`get`, `post`, `delete`…), con lo que reciben (`parameters`, `requestBody`) y lo que devuelven (`responses`) |
+| `components` | Las piezas que se reutilizan: esquemas de datos, respuestas de error y seguridad. Se usan con `$ref` |
+
 Todo se responde en la plantilla **`practicas/s03/versiones/respuestas.md`**: ábrela en VS
 Code y escribe donde están los `…`.
 
@@ -90,8 +101,8 @@ Code y escribe donde están los `…`.
    versiones» de la presentación es tu chuleta.
 2. **Parte 2 (7 min).** Abre <https://editor.swagger.io>. Abre `openapi.yaml` en VS Code,
    selecciónalo todo (Ctrl+A), cópialo (Ctrl+C) y pégalo en la parte izquierda del editor,
-   sustituyendo lo que hubiera. En la parte derecha, despliega `POST /apuestas` y su
-   esquema `ApuestaNueva` y contesta las preguntas de la plantilla.
+   sustituyendo lo que hubiera. Con el YAML a la izquierda y la documentación a la derecha,
+   contesta las preguntas de la plantilla sobre las partes del contrato.
 3. **Parte 3 (10 min).** Abre `fragmento-b-migrado.yaml`, una copia del fragmento B, y
    reescríbelo en OpenAPI 3.0 tomando como modelo el fragmento C. Para comprobarlo, pégalo
    en el editor: no debe marcar ningún error.

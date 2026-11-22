@@ -21,27 +21,31 @@ Swagger 2.0? ¿Qué indica esa línea?
 
 …
 
-## Parte 2 · Leer una operación como tester (7 min)
+## Parte 2 · El mapa del contrato (7 min)
 
 Abre <https://editor.swagger.io> y pega el contrato de la API de Sorteos
-(`docs/ejemplos/api-sorteos/openapi.yaml`). Despliega `POST /apuestas` y su esquema
-`ApuestaNueva`.
+(`docs/ejemplos/api-sorteos/openapi.yaml`). Busca en la parte izquierda (el YAML) y en la
+derecha (la documentación):
 
-1. ¿Qué datos hay que enviar y cuáles son obligatorios?
-
-   …
-
-2. ¿Qué reglas tienen los números de la apuesta? Escribe cada una como la comprobarías.
+1. ¿Qué versión de la especificación usa? ¿Y qué versión tiene la API?
 
    …
 
-3. ¿Qué códigos de respuesta puede devolver y en qué situación sale cada uno?
+2. ¿Cuántas rutas (`paths`) hay? ¿Y cuántas operaciones? (Una operación es un verbo en una
+   ruta.)
 
-   | Código | Cuándo |
-   |---|---|
-   | … | … |
+   …
 
-4. ¿Hace falta autenticarse? ¿Qué parte del contrato lo dice?
+3. ¿Qué esquemas hay en `components/schemas`? Elige uno y di qué representa.
+
+   …
+
+4. ¿Qué operaciones se pueden usar **sin** autenticarse? ¿Cómo lo has sabido?
+
+   …
+
+5. `POST /apuestas` usa `$ref: "#/components/schemas/ApuestaNueva"`. ¿Qué quiere decir esa
+   línea y dónde está lo que señala?
 
    …
 

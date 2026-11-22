@@ -145,7 +145,10 @@ Antes: puertos 3000 y 3001 públicos (§0).
    `…-3000.app.github.dev/swagger2.json`.
 2. Crea una suite **«Apuestas»** con **6 casos** de tu batería de ayer (`casos.csv`).
    Elige casos variados: positivos, negativos, de límite y de seguridad.
-3. Cada caso de `/apuestas` necesita su token: §6.
+3. Cada caso de `/apuestas` necesita su token (§6). Monta **un caso completo** (pedir token,
+   guardarlo y la petición con sus aserciones), comprueba que funciona y después
+   **clónalo** (clic derecho en el caso → Clone) para los demás: solo cambias el cuerpo,
+   el usuario y lo esperado.
 4. Añade a cada petición sus **aserciones**:
 
    | Aserción | Para qué |
