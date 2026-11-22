@@ -92,6 +92,16 @@ tiene cuatro bloques principales (en VS Code, Ctrl+K Ctrl+0 lo pliega y solo se 
 | `paths` | Las rutas y, en cada una, sus operaciones (`get`, `post`, `delete`…), con lo que reciben (`parameters`, `requestBody`) y lo que devuelven (`responses`) |
 | `components` | Las piezas que se reutilizan: esquemas de datos, respuestas de error y seguridad. Se usan con `$ref` |
 
+Para leer y editar el YAML:
+
+- La **sangría** dice qué va dentro de qué: siempre con **espacios**, nunca con tabuladores.
+- `clave: valor`, con un espacio después de los dos puntos.
+- Una línea que empieza por `-` es un elemento de una lista.
+- `{ type: integer }` y `[sorteoId, numeros]` son la forma corta de un objeto y de una lista.
+- `#` empieza un comentario.
+- `$ref: "#/components/schemas/ApuestaNueva"` se lee como una ruta: en este fichero (`#`),
+  dentro de `components`, en `schemas`, el esquema `ApuestaNueva`.
+
 Todo se responde en la plantilla **`practicas/s03/versiones/respuestas.md`**: ábrela en VS
 Code y escribe donde están los `…`.
 
