@@ -5,9 +5,11 @@ No hay que programar nada: se arranca, se lee su contrato y se prueba.
 
 ## Arrancarla
 
-En la terminal del codespace:
+En la terminal del codespace (la primera vez, `git pull` trae la API a tu rama sin tocar tus
+ejercicios):
 
 ```bash
+git pull --no-rebase --no-edit origin main
 cd docs/ejemplos/api-sorteos
 ./arrancar.sh
 ```
