@@ -27,13 +27,18 @@ export function crearApp(version: Version) {
 	// El contrato, para personas en /docs y para herramientas en /openapi.json y /swagger2.json
 	const contrato = leerYaml("openapi.yaml");
 	const contrato2 = leerYaml("swagger2.yaml");
-	app.get("/openapi.json", (_req, res) => {
-		res.json(contrato);
+	// Las herramientas que importan el contrato (ReadyAPI, SoapUI) necesitan la dirección completa:
+	// se pone la de quien lo pide (también detrás del proxy del Codespace)
+	const origen = (req: Request) => ({
+		host: req.get("x-forwarded-host") ?? req.get("host"),
+		esquema: (req.get("x-forwarded-proto") ?? req.protocol).split(",")[0],
+	});
+	app.get("/openapi.json", (req, res) => {
+		const { host, esquema } = origen(req);
+		res.json({ ...contrato, servers: [{ url: `${esquema}://${host}`, description: "Esta instancia de la API" }] });
 	});
 	app.get("/swagger2.json", (req, res) => {
-		// Swagger 2.0 necesita el host: se pone el de quien lo pide (también detrás del proxy del Codespace)
-		const host = req.get("x-forwarded-host") ?? req.get("host");
-		const esquema = (req.get("x-forwarded-proto") ?? req.protocol).split(",")[0];
+		const { host, esquema } = origen(req);
 		res.json({ ...contrato2, host, schemes: [esquema] });
 	});
 	app.use("/docs", swaggerUi.serve, swaggerUi.setup(contrato, { customSiteTitle: `API de Sorteos (${version})` }));

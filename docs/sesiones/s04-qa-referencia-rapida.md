@@ -18,18 +18,23 @@
 | 9 | `informe-defecto.md` y `matriz-completa.md` | Taller final: el ciclo completo |
 | 10 | Terminal | Guardar tu trabajo |
 | 11 | | Si algo falla |
+| 12 | Navegador | Cuestionario final |
 
 Las rutas de ficheros son relativas a `docs/ejemplos/api-sorteos/`. Los usuarios y los
 datos de partida están en la [referencia de la sesión 3](s03-qa-referencia-rapida.md), §1.
 
 ## §0 · Arrancar la API y hacer públicos los puertos
 
-En la terminal del codespace:
+En la terminal del codespace, desde la raíz del repositorio:
 
 ```bash
+git pull --no-rebase --no-edit origin main      # trae la solución de ayer y una mejora de la API
 cd docs/ejemplos/api-sorteos
 ./arrancar.sh
 ```
+
+Si la API ya estaba arrancada, párala con Ctrl+C y vuelve a lanzar `./arrancar.sh` después
+del `git pull`.
 
 ReadyAPI está en tu equipo y solo llega a la API si sus puertos son **públicos**:
 
@@ -112,8 +117,8 @@ token real del trabajo.
 
 ## §4 · Práctica 1: pruebas de seguridad (25 min)
 
-Abre `practicas/s04/casos-seguridad.md` (Ctrl+Shift+V para verla como tabla) y lanza los seis casos en la **estable** y después
-en la **candidata**. Todos con `GET /apuestas` salvo que se diga otra cosa:
+Abre `practicas/s04/casos-seguridad.md` (Ctrl+Shift+V para verla como tabla) y lanza los
+seis casos en la **estable** y después en la **candidata**. Todos con `GET /apuestas` salvo que se diga otra cosa:
 
 | ID | Caso | Cómo | Esperado |
 |---|---|---|---|
@@ -295,3 +300,9 @@ git push
 | `npm run token:caducado` falla | Estás en otra carpeta: `cd docs/ejemplos/api-sorteos` |
 | `testrunner` no se encuentra | Ejecútalo desde la carpeta `bin` de ReadyAPI, o con su ruta completa |
 | La candidata da los mismos resultados que la estable | Revisa que el endpoint apunta al **3001** |
+
+## §12 · Cuestionario final
+
+Para terminar el curso, rellena el cuestionario:
+
+<https://forms.cloud.microsoft/r/0HVS1znY2v>
