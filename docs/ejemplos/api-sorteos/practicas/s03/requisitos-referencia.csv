@@ -1,0 +1,21 @@
+ID;Requisito;Origen en el contrato (operación, campo o respuesta);Tipo (éxito / error)
+REQ-01;GET /salud responde 200 con estado y version;GET /salud · 200;éxito
+REQ-02;Con usuario y clave correctos se obtiene un token Bearer que caduca a los 30 minutos;POST /auth/token · 200 · Token;éxito
+REQ-03;Con clave incorrecta, POST /auth/token responde 401;POST /auth/token · 401;error
+REQ-04;Se pueden listar los sorteos, con items y total;GET /sorteos · 200;éxito
+REQ-05;El filtro estado solo admite abierto, cerrado o celebrado; otro valor da 400;EstadoSorteo (enum) · 400;error
+REQ-06;Un sorteo existente se devuelve con todos sus campos obligatorios y con precioApuesta numérico;Sorteo (required, type: number);éxito
+REQ-07;Un sorteo que no existe responde 404 con problem+json;GET /sorteos/{id} · 404;error
+REQ-08;Un id que no es entero positivo responde 400;IdSorteo (integer, minimum: 1) · 400;error
+REQ-09;El resultado de un sorteo celebrado tiene 6 números distintos del 1 al 49 y un complementario;Resultado;éxito
+REQ-10;El resultado de un sorteo no celebrado responde 404;GET /sorteos/{id}/resultado · 404;error
+REQ-11;Las operaciones de apuestas sin token responden 401;security · 401;error
+REQ-12;Cada usuario solo ve sus propias apuestas; una ajena responde 404;GET /apuestas/{id} · descripción · 404;error
+REQ-13;Una apuesta lleva exactamente 6 números;ApuestaNueva.numeros (minItems/maxItems) · 400;error
+REQ-14;Los números de una apuesta son distintos;uniqueItems: true · 400;error
+REQ-15;Cada número está entre 1 y 49;minimum: 1 · maximum: 49 · 400;error
+REQ-16;Solo se apuesta en sorteos abiertos; si no, 409;POST /apuestas · 409;error
+REQ-17;Apostar exige el permiso apuestas:escribir; sin él, 403;descripción · 403;error
+REQ-18;Al crear una apuesta se responde 201 con la cabecera Location;POST /apuestas · 201 · Location;éxito
+REQ-19;El importe de la apuesta es el precio del sorteo;descripción de POST /apuestas;éxito
+REQ-20;Una apuesta de un sorteo abierto se puede anular (204); si no está abierto, 409;DELETE /apuestas/{id} · 204 · 409;éxito / error
