@@ -247,7 +247,8 @@ Pulsa **Get Access Token** y ejecuta la petición. Comprueba: con `app-gestion`,
 
 4. Ejecuta la **suite** contra la estable (doble clic en «Apuestas» → **▶ Run**): todo en
    **verde**. Si algo sale en rojo en la estable, revisa el caso: la estable es la referencia.
-5. Guarda el proyecto (**File → Save Project**, o Ctrl+S).
+5. Guarda el proyecto (**File → Save Project**, o Ctrl+S) y apunta dónde queda el `.xml`: lo
+   necesitarás para `testrunner` (§8).
 
 Aserción de script opcional (la de la presentación), para `GET /sorteos/{id}`:
 
@@ -262,20 +263,34 @@ assert s.precioApuesta instanceof Number : "precioApuesta no es un número"
 ## §7 · Práctica 3: estable frente a candidata (25 min)
 
 1. Ejecuta tu suite contra la estable (`…-3000…`): verde.
-2. Cambia el endpoint al puerto **3001**: en el entorno del proyecto o en el desplegable
-   de la dirección de las peticiones.
-3. Ejecuta la **misma** suite contra la candidata.
-4. Compara: ¿qué casos pasan a rojo?
-5. Genera el informe de la ejecución de la candidata y rellena
+2. Cambia la dirección al puerto **3001**, para todas las peticiones a la vez: en el
+   Navigator, doble clic en la **API** (el nodo de la API de Sorteos, no un caso) → pestaña
+   **Service Endpoints** → **+** y escribe la dirección de la candidata:
+
+   ```text
+   https://<tu-codespace>-3001.app.github.dev
+   ```
+
+   Selecciónala → **Assign** → todas las peticiones y pasos de prueba. (Si en tu proyecto
+   hay **Environments**, vale también crear uno «Candidata» con esa dirección y elegirlo en el
+   desplegable de la barra.)
+3. Ejecuta la **misma** suite contra la candidata (doble clic en «Apuestas» → **▶ Run**).
+4. Compara: ¿qué casos pasan a rojo? Haz clic en un paso rojo para ver la respuesta que
+   recibió.
+5. Con la suite abierta, botón **Report** de la barra → **Test suite printable report** →
+   **OK**, y guárdalo con **Save** (si tu versión no lo tiene, una captura de la suite en rojo
+   vale). Después rellena
    **`practicas/s04/decision-publicacion.md`**: resultados de las dos versiones, la decisión
    (¿se puede publicar?) y qué defectos no detecta tu suite.
+6. Para volver a la estable: lo mismo que en el paso 2, con la dirección del 3000.
 
 ## §8 · Ejecutar la suite por línea de comandos
 
 ReadyAPI y SoapUI traen el mismo ejecutor, `testrunner`, en su carpeta `bin`
 (`testrunner.bat` en Windows, `testrunner.sh` en macOS y Linux).
 
-**Windows (cmd), desde la carpeta `bin` de ReadyAPI:**
+**Windows (cmd), desde la carpeta `bin` de ReadyAPI** (normalmente
+`C:\Program Files\SmartBear\ReadyAPI-<versión>\bin`):
 
 ```bat
 testrunner.bat -s "Apuestas" -r -j -f informes -e https://<tu-codespace>-3001.app.github.dev "C:\ruta\a\proyecto-sorteos.xml"
@@ -344,9 +359,11 @@ git push
 | ReadyAPI no puede importar o todo da error de conexión | Los puertos no son públicos (§0), o la API está parada en el codespace |
 | ReadyAPI recibe una página de inicio de sesión de GitHub | Igual: el puerto sigue en Private |
 | ReadyAPI no importa el OpenAPI 3.0 | Usa `/swagger2.json` |
+| El paso «Guardar token» falla o `token` queda vacío | Ejecuta el **caso entero**, no solo un paso: la transferencia necesita la respuesta del paso anterior. Revisa que la expresión sea `$.access_token` |
 | Todo da 401 | El token ha caducado (30 min): vuelve a pedirlo o ejecuta el caso entero, que lo pide en su primer paso |
 | `npm run token:caducado` falla | Estás en otra carpeta: `cd docs/ejemplos/api-sorteos` |
 | `testrunner` no se encuentra | Ejecútalo desde la carpeta `bin` de ReadyAPI, o con su ruta completa |
+| La cabecera llega como `Bearer ${#TestCase#token}` literal | El nombre de la propiedad no coincide: tiene que llamarse exactamente `token`, en el caso de prueba |
 | La candidata da los mismos resultados que la estable | Revisa que el endpoint apunta al **3001** |
 
 ## §12 · Cuestionario final
