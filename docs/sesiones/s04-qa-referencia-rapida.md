@@ -11,8 +11,8 @@
 | 2 | Swagger UI | OAuth2 Client Credentials |
 | 3 | Decodificador de JWT | Ver lo que lleva un token |
 | 4 | `practicas/s04/casos-seguridad.md` | Práctica 1: pruebas de seguridad |
-| 5 | ReadyAPI | Práctica 2: tu suite en ReadyAPI |
-| 6 | ReadyAPI | Autenticación en ReadyAPI |
+| 5 | ReadyAPI | Autenticación en ReadyAPI |
+| 6 | ReadyAPI | Práctica 2: tu suite en ReadyAPI |
 | 7 | ReadyAPI | Práctica 3: estable frente a candidata |
 | 8 | Terminal de tu equipo | Ejecutar la suite por línea de comandos |
 | 9 | `informe-defecto.md` y `matriz-completa.md` | Taller final: el ciclo completo |
@@ -85,7 +85,8 @@ Aplicaciones de prueba (están en la descripción del contrato):
 `client_id` y `client_secret`, marca los permisos que pides → **Authorize** → Close.
 Swagger UI pide el token y lo usa solo.
 
-**La petición por dentro** (la que tendrás que montar en ReadyAPI): `POST /oauth/token`
+**La petición por dentro** (la usarás en el caso CS-04 de la práctica 1, desde la operación
+`POST /oauth/token` de Swagger UI): `POST /oauth/token`
 con el cuerpo como formulario (`application/x-www-form-urlencoded`), no como JSON:
 
 ```text
@@ -136,52 +137,9 @@ debería responder según el contrato, y pruébalos también en las dos versione
 Anota el resultado en las dos columnas y, si falla, el curl y la respuesta en la columna de
 evidencia. Añade los casos que fallen a tu batería y a la matriz.
 
-## §5 · Práctica 2: tu suite en ReadyAPI (25 min)
+## §5 · Autenticación en ReadyAPI
 
-Antes: puertos 3000 y 3001 públicos (§0).
-
-1. **Nuevo proyecto** a partir de una definición de API (OpenAPI/Swagger), con la URL:
-
-   ```text
-   https://<tu-codespace>-3000.app.github.dev/openapi.json
-   ```
-
-   Si tu ReadyAPI no acepta el 3.0, usa el mismo contrato en Swagger 2.0:
-   `…-3000.app.github.dev/swagger2.json`.
-2. Crea una suite **«Apuestas»** con **6 casos** de tu batería de ayer (`casos.md` o `casos.csv`).
-   Elige casos variados: positivos, negativos, de límite y de seguridad.
-3. Cada caso de `/apuestas` necesita su token (§6). Monta **un caso completo** (pedir token,
-   guardarlo y la petición con sus aserciones), comprueba que funciona y después
-   **clónalo** (clic derecho en el caso → Clone) para los demás: solo cambias el cuerpo,
-   el usuario y lo esperado.
-4. Añade a cada petición sus **aserciones**:
-
-   | Aserción | Para qué |
-   |---|---|
-   | Valid HTTP Status Codes | El código esperado |
-   | JsonPath Match | Un valor concreto de la respuesta |
-   | JsonPath Count | Cuántos elementos tiene una lista |
-   | Contains | Un texto en la respuesta |
-   | Swagger/OpenAPI Compliance | Que la respuesta cumple el contrato (solo ReadyAPI) |
-   | Response SLA | Tiempo máximo de respuesta |
-
-5. Ejecuta la suite contra la estable: todo en **verde**. Si algo sale en rojo en la
-   estable, revisa el caso: la estable es la referencia.
-6. Guarda el proyecto.
-
-Aserción de script opcional (la de la presentación), para `GET /sorteos/{id}`:
-
-```groovy
-import groovy.json.JsonSlurper
-
-def s = new JsonSlurper().parseText(messageExchange.responseContent)
-assert ['id', 'nombre', 'precioApuesta'].every { s.containsKey(it) }
-assert s.precioApuesta instanceof Number : "precioApuesta no es un número"
-```
-
-## §6 · Autenticación en ReadyAPI
-
-Se usa en la **práctica 2** (§5), al montar los casos de `/apuestas`. Todo se hace **dentro de
+Se usa en la **práctica 2** (§6), al montar los casos de `/apuestas`. Todo se hace **dentro de
 ReadyAPI**: no hace falta Swagger UI ni copiar el token de la práctica 1, porque el caso pide su
 propio token cada vez que se ejecuta (el token caduca a los 30 minutos).
 
@@ -213,7 +171,51 @@ flujo Client Credentials:
 | Client Secret | `secreto-gestion` |
 | Scope | `apuestas:leer apuestas:escribir` |
 
-Comprueba los tres resultados: 200 con permiso, 401 sin token y 403 sin permiso.
+Comprueba: con el perfil de `app-gestion`, `POST /apuestas` funciona; con uno de `app-consulta`
+(`secreto-consulta`, scope `apuestas:leer`), 403; sin perfil ni cabecera, 401.
+
+## §6 · Práctica 2: tu suite en ReadyAPI (25 min)
+
+Antes: puertos 3000 y 3001 públicos (§0).
+
+1. **Nuevo proyecto** a partir de una definición de API (OpenAPI/Swagger), con la URL:
+
+   ```text
+   https://<tu-codespace>-3000.app.github.dev/openapi.json
+   ```
+
+   Si tu ReadyAPI no acepta el 3.0, usa el mismo contrato en Swagger 2.0:
+   `…-3000.app.github.dev/swagger2.json`.
+2. Crea una suite **«Apuestas»** con **6 casos** de tu batería de ayer (`casos.md`).
+   Elige casos variados: positivos, negativos, de límite y de seguridad.
+3. Cada caso de `/apuestas` necesita su token (§5). Monta **un caso completo** (pedir token,
+   guardarlo y la petición con sus aserciones), comprueba que funciona y después
+   **clónalo** (clic derecho en el caso → Clone) para los demás: solo cambias el cuerpo,
+   el usuario y lo esperado.
+4. Añade a cada petición sus **aserciones**:
+
+   | Aserción | Para qué |
+   |---|---|
+   | Valid HTTP Status Codes | El código esperado |
+   | JsonPath Match | Un valor concreto de la respuesta |
+   | JsonPath Count | Cuántos elementos tiene una lista |
+   | Contains | Un texto en la respuesta |
+   | Swagger/OpenAPI Compliance | Que la respuesta cumple el contrato (solo ReadyAPI) |
+   | Response SLA | Tiempo máximo de respuesta |
+
+5. Ejecuta la suite contra la estable: todo en **verde**. Si algo sale en rojo en la
+   estable, revisa el caso: la estable es la referencia.
+6. Guarda el proyecto.
+
+Aserción de script opcional (la de la presentación), para `GET /sorteos/{id}`:
+
+```groovy
+import groovy.json.JsonSlurper
+
+def s = new JsonSlurper().parseText(messageExchange.responseContent)
+assert ['id', 'nombre', 'precioApuesta'].every { s.containsKey(it) }
+assert s.precioApuesta instanceof Number : "precioApuesta no es un número"
+```
 
 ## §7 · Práctica 3: estable frente a candidata (25 min)
 
