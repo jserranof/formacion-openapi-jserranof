@@ -181,6 +181,10 @@ assert s.precioApuesta instanceof Number : "precioApuesta no es un número"
 
 ## §6 · Autenticación en ReadyAPI
 
+Se usa en la **práctica 2** (§5), al montar los casos de `/apuestas`. Todo se hace **dentro de
+ReadyAPI**: no hace falta Swagger UI ni copiar el token de la práctica 1, porque el caso pide su
+propio token cada vez que se ejecuta (el token caduca a los 30 minutos).
+
 **Opción A, válida en ReadyAPI y en SoapUI:** el token se pide dentro del propio caso.
 
 1. Primer paso del caso: petición `POST /auth/token` con este cuerpo, y aserción de
