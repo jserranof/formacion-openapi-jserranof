@@ -14,7 +14,7 @@
 | 5 | Swagger UI | Pedir un token y usarlo con «Authorize» |
 | 6 | Swagger UI | Cómo escribir un cuerpo de prueba |
 | 7 | Swagger UI de la candidata | Práctica 3: ¿qué incumple la candidata? |
-| 8 | `practicas/s03/casos.csv` y `matriz.csv` | Práctica 4: tu batería de casos |
+| 8 | `practicas/s03/casos.md` y `matriz.md` | Práctica 4: tu batería de casos |
 | 9 | Terminal | Guardar tu trabajo |
 | 10 | | Si algo falla |
 
@@ -230,11 +230,9 @@ No te quedes en los casos que funcionan: prueba también con datos «malos».
 
 ## §8 · Práctica 4: tu batería de casos (25 min)
 
-Abre `practicas/s03/casos.csv`. La primera fila ya está hecha como ejemplo:
-
-```text
-CP-01;Apuesta válida en sorteo abierto;REQ-03;positivo;Token de ana;POST /apuestas;{"sorteoId": 4, "numeros": [3,12,21,30,39,48]};201;Apuesta con estado activa e importe 0.5;;;
-```
+Abre `practicas/s03/casos.md`: es una tabla, con la primera fila de ejemplo. En VS Code,
+**Ctrl+Shift+V** abre la vista previa y la enseña como tabla; edítala en el texto, una fila
+por caso. Si ya empezaste en `casos.csv`, puedes seguir allí.
 
 1. **Guiado: `POST /apuestas`.** Convierte en casos las tablas de partición de equivalencia
    y de valores límite de la presentación: un caso por grupo y uno por cada valor límite.
@@ -244,7 +242,7 @@ CP-01;Apuesta válida en sorteo abierto;REQ-03;positivo;Token de ana;POST /apues
 3. Que haya al menos un caso por cada código de respuesta que declara el contrato para esas
    operaciones.
 4. Ejecuta cada caso en las dos versiones y anota «pasa» o «falla» en sus columnas.
-5. Rellena `practicas/s03/matriz.csv`: cada requisito con sus casos y cuántos son
+5. Rellena `practicas/s03/matriz.md`: cada requisito con sus casos y cuántos son
    positivos, negativos, de límite y de seguridad. Marca los requisitos sin casos: son
    huecos de cobertura.
 

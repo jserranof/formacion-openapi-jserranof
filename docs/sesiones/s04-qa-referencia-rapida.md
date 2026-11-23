@@ -10,12 +10,12 @@
 | 1 | Swagger UI | Token de usuario y token caducado |
 | 2 | Swagger UI | OAuth2 Client Credentials |
 | 3 | Decodificador de JWT | Ver lo que lleva un token |
-| 4 | `practicas/s04/casos-seguridad.csv` | Práctica 1: pruebas de seguridad |
+| 4 | `practicas/s04/casos-seguridad.md` | Práctica 1: pruebas de seguridad |
 | 5 | ReadyAPI | Práctica 2: tu suite en ReadyAPI |
 | 6 | ReadyAPI | Autenticación en ReadyAPI |
 | 7 | ReadyAPI | Práctica 3: estable frente a candidata |
 | 8 | Terminal de tu equipo | Ejecutar la suite por línea de comandos |
-| 9 | `informe-defecto.md` y `matriz-completa.csv` | Taller final: el ciclo completo |
+| 9 | `informe-defecto.md` y `matriz-completa.md` | Taller final: el ciclo completo |
 | 10 | Terminal | Guardar tu trabajo |
 | 11 | | Si algo falla |
 
@@ -112,7 +112,7 @@ token real del trabajo.
 
 ## §4 · Práctica 1: pruebas de seguridad (25 min)
 
-Abre `practicas/s04/casos-seguridad.csv` y lanza los seis casos en la **estable** y después
+Abre `practicas/s04/casos-seguridad.md` (Ctrl+Shift+V para verla como tabla) y lanza los seis casos en la **estable** y después
 en la **candidata**. Todos con `GET /apuestas` salvo que se diga otra cosa:
 
 | ID | Caso | Cómo | Esperado |
@@ -143,7 +143,7 @@ Antes: puertos 3000 y 3001 públicos (§0).
 
    Si tu ReadyAPI no acepta el 3.0, usa el mismo contrato en Swagger 2.0:
    `…-3000.app.github.dev/swagger2.json`.
-2. Crea una suite **«Apuestas»** con **6 casos** de tu batería de ayer (`casos.csv`).
+2. Crea una suite **«Apuestas»** con **6 casos** de tu batería de ayer (`casos.md` o `casos.csv`).
    Elige casos variados: positivos, negativos, de límite y de seguridad.
 3. Cada caso de `/apuestas` necesita su token (§6). Monta **un caso completo** (pedir token,
    guardarlo y la petición con sus aserciones), comprueba que funciona y después
@@ -267,7 +267,7 @@ fallado. Es lo que mira un pipeline para seguir o pararse.
    | Evidencia | Petición y respuesta, o el informe de ReadyAPI |
    | Gravedad | Alta, media o baja, y por qué |
 
-5. Completa `practicas/s04/matriz-completa.csv`: requisito, contrato, caso, ejecución,
+5. Completa `practicas/s04/matriz-completa.md`: requisito, contrato, caso, ejecución,
    resultado, evidencia, defecto y si está automatizado.
 
 En un informe de defecto no pegues tokens: escribe `Bearer <token de ana>`.
