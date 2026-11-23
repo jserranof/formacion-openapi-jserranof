@@ -1,2 +1,2 @@
 Requisito;Contrato (operación y respuesta);Caso;Ejecución (versión y fecha);Resultado;Evidencia (fichero o captura);Defecto;Automatizado (suite y caso)
-REQ-04;POST /apuestas · 409;CP-12;;;;;
+REQ-16;POST /apuestas · 409;CP-12;;;;;
