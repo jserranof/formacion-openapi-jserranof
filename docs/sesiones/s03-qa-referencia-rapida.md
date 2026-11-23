@@ -159,6 +159,24 @@ bien». Bien: «una apuesta con un número repetido se rechaza con 400».
    | Response headers | `content-type`, `location`… |
    | Curl y Request URL | Es la evidencia: cópialos si la prueba falla |
 
+### Cuando Swagger UI no te deja enviar el dato
+
+Swagger UI respeta el contrato: si un parámetro tiene valores permitidos (`enum`), solo deja
+elegir uno de ellos. Para probar un valor no permitido, sáltatelo:
+
+- **En el navegador** (peticiones `GET` sin token): escribe la dirección a mano, por ejemplo
+  `https://<tu-codespace>-3000.app.github.dev/sorteos?estado=otro`. Verás el cuerpo de la
+  respuesta, pero no el código.
+- **En la terminal del codespace**, con `curl` y `localhost` (no la dirección
+  `…app.github.dev`, que pide iniciar sesión en GitHub):
+
+  ```bash
+  curl -i 'http://localhost:3000/sorteos?estado=otro'     # estable
+  curl -i 'http://localhost:3001/sorteos?estado=otro'     # candidata
+  ```
+
+  `-i` enseña el código de estado y las cabeceras además del cuerpo.
+
 ## §5 · Pedir un token y usarlo con «Authorize»
 
 Las operaciones con candado (las de `/apuestas`) piden token.
