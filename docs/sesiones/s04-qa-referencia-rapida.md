@@ -11,7 +11,7 @@
 | 2 | Swagger UI | OAuth2 Client Credentials |
 | 3 | Decodificador de JWT | Ver lo que lleva un token |
 | 4 | `practicas/s04/casos-seguridad.md` | Práctica 1: pruebas de seguridad |
-| 5 | ReadyAPI | Autenticación en ReadyAPI |
+| 5 | ReadyAPI | Paso a paso: el proyecto y el primer caso con su token |
 | 6 | ReadyAPI | Práctica 2: tu suite en ReadyAPI |
 | 7 | ReadyAPI | Práctica 3: estable frente a candidata |
 | 8 | Terminal de tu equipo | Ejecutar la suite por línea de comandos |
@@ -137,48 +137,17 @@ debería responder según el contrato, y pruébalos también en las dos versione
 Anota el resultado en las dos columnas y, si falla, el curl y la respuesta en la columna de
 evidencia. Añade los casos que fallen a tu batería y a la matriz.
 
-## §5 · Autenticación en ReadyAPI
+## §5 · ReadyAPI paso a paso: el proyecto y el primer caso con su token
 
-Se usa en la **práctica 2** (§6), al montar los casos de `/apuestas`. Todo se hace **dentro de
-ReadyAPI**: no hace falta Swagger UI ni copiar el token de la práctica 1, porque el caso pide su
-propio token cada vez que se ejecuta (el token caduca a los 30 minutos).
+Antes: puertos 3000 y 3001 públicos (§0). Todo se hace **dentro de ReadyAPI**: no hace falta
+Swagger UI ni copiar el token de la práctica 1, porque el caso pide su propio token cada vez
+que se ejecuta (el token caduca a los 30 minutos). Si algún nombre de menú no coincide del
+todo con tu versión, búscalo con **clic derecho** sobre el elemento.
 
-**Opción A, válida en ReadyAPI y en SoapUI:** el token se pide dentro del propio caso.
+### A · Crear el proyecto desde el contrato (una sola vez)
 
-1. Primer paso del caso: petición `POST /auth/token` con este cuerpo, y aserción de
-   código `200`:
-
-   ```json
-   { "usuario": "ana", "clave": "ana-practicas" }
-   ```
-
-2. Segundo paso: **Property Transfer**. Origen: la respuesta (`Response`) del paso
-   anterior, con JsonPath `$.access_token`. Destino: una propiedad `token` del caso de
-   prueba.
-3. En la petición que se prueba, añade la cabecera:
-
-   ```text
-   Authorization: Bearer ${#TestCase#token}
-   ```
-
-**Opción B, solo ReadyAPI:** pestaña **Auth** de la petición → nuevo perfil **OAuth 2.0**,
-flujo Client Credentials:
-
-| Campo | Valor |
-|---|---|
-| Access Token URI | `https://<tu-codespace>-3000.app.github.dev/oauth/token` |
-| Client ID | `app-gestion` |
-| Client Secret | `secreto-gestion` |
-| Scope | `apuestas:leer apuestas:escribir` |
-
-Comprueba: con el perfil de `app-gestion`, `POST /apuestas` funciona; con uno de `app-consulta`
-(`secreto-consulta`, scope `apuestas:leer`), 403; sin perfil ni cabecera, 401.
-
-## §6 · Práctica 2: tu suite en ReadyAPI (25 min)
-
-Antes: puertos 3000 y 3001 públicos (§0).
-
-1. **Nuevo proyecto** a partir de una definición de API (OpenAPI/Swagger), con la URL:
+1. Menú **File → New Functional Test** (o, en el Dashboard, **New Test → Functional Test**).
+2. Elige **API Definition** y pega la URL del contrato → **Next**:
 
    ```text
    https://<tu-codespace>-3000.app.github.dev/openapi.json
@@ -186,26 +155,99 @@ Antes: puertos 3000 y 3001 públicos (§0).
 
    Si tu ReadyAPI no acepta el 3.0, usa el mismo contrato en Swagger 2.0:
    `…-3000.app.github.dev/swagger2.json`.
-2. Crea una suite **«Apuestas»** con **6 casos** de tu batería de ayer (`casos.md`).
+3. Proyecto: deja **New project** → **Next**.
+4. Aserciones: deja marcada la del código de estado → **Next**.
+5. Elige **Multiple Test Cases** (un caso por operación) → **Create Test**.
+
+En el panel de la izquierda (**Navigator**), dentro de **Functional Tests**, aparece el
+proyecto con una suite y un caso por operación. Renombra la suite a **«Apuestas»**
+(clic derecho → **Rename**).
+
+### B · El primer caso: CP-05 Apuesta válida
+
+Parte del caso que ha creado ReadyAPI para `POST /apuestas`. Renómbralo a
+`CP-05 Apuesta válida` y ábrelo con doble clic (se abre el **editor del caso**).
+
+1. **La propiedad del token.** En el editor del caso, panel **Properties** (abajo) → **+** →
+   nombre `token`, valor vacío.
+2. **Paso «Pedir token».** Clic derecho en el caso (en el Navigator) → **Add Step → REST
+   Request** → elige `POST /auth/token`. En la petición, cuerpo `application/json`:
+
+   ```json
+   { "usuario": "ana", "clave": "ana-practicas" }
+   ```
+
+   Ejecútala (botón **▶** verde de la petición): tiene que salir 200 con `access_token`.
+   Añade la aserción: panel **Assertions** de la petición → **+** → **Valid HTTP Status
+   Codes** → `200`.
+3. **Paso «Guardar token».** Clic derecho en el caso → **Add Step → Property Transfer**. En
+   su editor, **+** (nueva transferencia):
+   - **Source:** el paso «Pedir token», **Property** `Response`, **Path language** `JSONPath`,
+     y en el cuadro de abajo escribe `$.access_token`.
+   - **Target:** el caso de prueba (CP-05) y **Property** `token`.
+   - Ejecuta la transferencia (**▶**): la propiedad `token` del caso se rellena.
+4. **Ordena los pasos.** Los nuevos se añaden al final: arrástralos en el editor del caso hasta
+   dejar **1 · Pedir token**, **2 · Guardar token** y **3 · POST /apuestas**.
+5. **La petición que se prueba.** Abre el paso `POST /apuestas`:
+   - Panel **Headers** → **+** → nombre `Authorization`, valor
+     `Bearer ${#TestCase#token}`.
+   - Cuerpo `application/json`:
+
+     ```json
+     {"sorteoId": 4, "numeros": [3, 12, 21, 30, 39, 48]}
+     ```
+
+   - Aserciones: la del código de estado con `201`, y **+** → **JsonPath Match** con la
+     expresión `$.estado` y el valor esperado `activa`.
+6. **Ejecuta el caso entero** (botón **▶ Run** del editor del caso): los tres pasos en verde.
+
+### C · Los demás casos: clonar
+
+Clic derecho en `CP-05` → **Clone Test Case**, y en la copia cambia solo lo necesario:
+
+| Caso | Qué cambias | Esperado |
+|---|---|---|
+| Datos no válidos (repetido, fuera de rango…) | El cuerpo del paso 3 | Código `400` (quita el JsonPath) |
+| Sorteo cerrado | `"sorteoId": 3` en el paso 3 | Código `409` |
+| Sin permiso | El cuerpo del paso 1: `luis` / `luis-practicas` | Código `403` |
+| Apuesta de otro usuario | Cambia el paso 3 por `GET /apuestas/{id}` con `id` = `3` (con la misma cabecera `Authorization`) | Código `404` |
+
+### D · Atajo solo de ReadyAPI: la pestaña Auth (opcional)
+
+En vez de los pasos 1 a 3, ReadyAPI puede pedir el token por OAuth2. En la petición, panel
+**Auth** → **Add Authorization Profile** → **OAuth 2.0**, y en **OAuth 2 Flow** elige
+**Client Credentials Grant**:
+
+| Campo | Valor |
+|---|---|
+| Access Token URL | `https://<tu-codespace>-3000.app.github.dev/oauth/token` |
+| Client Identification | `app-gestion` |
+| Client Secret | `secreto-gestion` |
+| Scope | `apuestas:leer apuestas:escribir` |
+
+Pulsa **Get Access Token** y ejecuta la petición. Comprueba: con `app-gestion`,
+`POST /apuestas` responde 201; con un perfil de `app-consulta` (`secreto-consulta`, scope
+`apuestas:leer`), 403; sin perfil ni cabecera, 401.
+
+## §6 · Práctica 2: tu suite en ReadyAPI (25 min)
+
+1. Crea el proyecto y el primer caso, **CP-05**, siguiendo el §5 (apartados A y B).
+2. **Clónalo** (§5, apartado C) hasta tener **6 casos** de tu batería de ayer (`casos.md`).
    Elige casos variados: positivos, negativos, de límite y de seguridad.
-3. Cada caso de `/apuestas` necesita su token (§5). Monta **un caso completo** (pedir token,
-   guardarlo y la petición con sus aserciones), comprueba que funciona y después
-   **clónalo** (clic derecho en el caso → Clone) para los demás: solo cambias el cuerpo,
-   el usuario y lo esperado.
-4. Añade a cada petición sus **aserciones**:
+3. Añade a cada petición sus **aserciones**:
 
-   | Aserción | Para qué |
-   |---|---|
-   | Valid HTTP Status Codes | El código esperado |
-   | JsonPath Match | Un valor concreto de la respuesta |
-   | JsonPath Count | Cuántos elementos tiene una lista |
-   | Contains | Un texto en la respuesta |
-   | Swagger/OpenAPI Compliance | Que la respuesta cumple el contrato (solo ReadyAPI) |
-   | Response SLA | Tiempo máximo de respuesta |
+| Aserción | Para qué |
+|---|---|
+| Valid HTTP Status Codes | El código esperado |
+| JsonPath Match | Un valor concreto de la respuesta |
+| JsonPath Count | Cuántos elementos tiene una lista |
+| Contains | Un texto en la respuesta |
+| Swagger/OpenAPI Compliance | Que la respuesta cumple el contrato (solo ReadyAPI) |
+| Response SLA | Tiempo máximo de respuesta |
 
-5. Ejecuta la suite contra la estable: todo en **verde**. Si algo sale en rojo en la
-   estable, revisa el caso: la estable es la referencia.
-6. Guarda el proyecto.
+4. Ejecuta la **suite** contra la estable (doble clic en «Apuestas» → **▶ Run**): todo en
+   **verde**. Si algo sale en rojo en la estable, revisa el caso: la estable es la referencia.
+5. Guarda el proyecto (**File → Save Project**, o Ctrl+S).
 
 Aserción de script opcional (la de la presentación), para `GET /sorteos/{id}`:
 
