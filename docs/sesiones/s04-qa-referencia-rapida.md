@@ -212,6 +212,32 @@ Clic derecho en `CP-05` → **Clone Test Case**, y en la copia cambia solo lo ne
 | Sin permiso | El cuerpo del paso 1: `luis` / `luis-practicas` | Código `403` |
 | Apuesta de otro usuario | Cambia el paso 3 por `GET /apuestas/{id}` con `id` = `3` (con la misma cabecera `Authorization`) | Código `404` |
 
+**Más aserciones: no te quedes solo en el código.** Un 400 dice que algo está mal; el cuerpo
+dice **qué**. La estable responde así a los números repetidos:
+
+```json
+{"title": "Datos no válidos", "status": 400, "detail": "La apuesta no es válida",
+ "errores": [{"campo": "numeros", "motivo": "los 6 números deben ser distintos"}]}
+```
+
+`errores` es una lista: `[0]` es su primer elemento. Añade a tus casos alguna de estas:
+
+| Caso | Aserción | Expresión o texto | Valor esperado |
+|---|---|---|---|
+| Número repetido | JsonPath Match | `$.errores[0].campo` | `numeros` |
+| Número repetido | Contains | `distintos` | — |
+| Número repetido | JsonPath Count | `$.errores[?(@.campo=='numeros')]` | `1` |
+| Fuera de rango (0 o 50) | Contains | `entre 1 y 49` | — |
+| Apuesta válida | JsonPath Match | `$.importe` | `0.5` (el precio del sorteo 4) |
+| Apuesta válida | JsonPath Count | `$.numeros` | `6` |
+
+- **JsonPath Match** compara un valor exacto: con un texto largo, un acento o un espacio de más
+  ya falla. Para mensajes, mejor **Contains** con una palabra clave.
+- **JsonPath Count** cuenta elementos: la expresión con `[?(...)]` es un **filtro** («los errores
+  cuyo campo es `numeros`») y no depende de en qué posición venga el error.
+- Ejecuta con la estable (verde) y con la candidata: en el caso del repetido fallan **todas**,
+  porque la candidata responde 201 sin `errores`. Más aserciones, más evidencia del defecto.
+
 ### D · Atajo solo de ReadyAPI: la pestaña Auth (opcional)
 
 En vez de los pasos 1 a 3, ReadyAPI puede pedir el token por OAuth2. En la petición, panel
@@ -250,7 +276,23 @@ Pulsa **Get Access Token** y ejecuta la petición. Comprueba: con `app-gestion`,
 5. Guarda el proyecto (**File → Save Project**, o Ctrl+S) y apunta dónde queda el `.xml`: lo
    necesitarás para `testrunner` (§8).
 
-Aserción de script opcional (la de la presentación), para `GET /sorteos/{id}`:
+### Opcional · Aserciones de script (Groovy)
+
+Para comprobar lo que las otras aserciones no alcanzan: un tipo de dato, una cabecera o varias
+condiciones a la vez. No hace falta saber programar: se copia el script y se lee como una
+lista de comprobaciones (`assert` = «tiene que cumplirse»; el texto tras `:` es el mensaje si
+falla).
+
+**Cómo se añade:**
+
+1. Abre la petición del caso y **ejecútala una vez** (para que tenga respuesta).
+2. Panel **Assertions** → **+** → categoría **Script** → **Script Assertion** → **Add**.
+3. Ponle un nombre (p. ej. `Precio numérico`) y pega el script en el editor.
+4. Pulsa el **▶** del editor del script para probarlo: debe decir que pasa. **OK**.
+5. Ejecuta el caso contra la estable (verde) y contra la candidata.
+
+**1 · El precio es un número** (en un caso nuevo con `GET /sorteos/{id}`, `id` = `5`; no
+necesita token). En la candidata falla: devuelve el precio como texto.
 
 ```groovy
 import groovy.json.JsonSlurper
@@ -258,6 +300,38 @@ import groovy.json.JsonSlurper
 def s = new JsonSlurper().parseText(messageExchange.responseContent)
 assert ['id', 'nombre', 'precioApuesta'].every { s.containsKey(it) }
 assert s.precioApuesta instanceof Number : "precioApuesta no es un número"
+```
+
+**2 · Al crear, la respuesta lleva la cabecera `Location`** (en la petición de **CP-05**). En la
+candidata falla: tu suite «verde» no lo detectaba.
+
+```groovy
+def loc = messageExchange.responseHeaders['Location']
+assert loc : "Falta la cabecera Location"
+assert loc[0] ==~ /\/apuestas\/\d+/ : "Location no apunta a la apuesta creada"
+```
+
+**3 · El error señala el campo `numeros`** (en la petición del **número repetido**), esté
+donde esté en la lista:
+
+```groovy
+import groovy.json.JsonSlurper
+
+def r = new JsonSlurper().parseText(messageExchange.responseContent)
+assert r.errores : "La respuesta no trae la lista de errores"
+assert r.errores.any { it.campo == 'numeros' } : "Ningún error señala el campo numeros"
+```
+
+**4 · La apuesta creada es la que se pidió** (en **CP-05**). Pasa en las dos versiones: no todo
+script tiene que encontrar un defecto; también sirve para asegurar lo que funciona.
+
+```groovy
+import groovy.json.JsonSlurper
+
+def a = new JsonSlurper().parseText(messageExchange.responseContent)
+assert a.numeros == [3, 12, 21, 30, 39, 48] : "No devuelve los números enviados"
+assert a.importe == 0.5 : "El importe no es el precio del sorteo 4"
+assert a.estado == 'activa' : "La apuesta no queda activa"
 ```
 
 ## §7 · Práctica 3: estable frente a candidata (25 min)
