@@ -364,6 +364,7 @@ git push
 | `npm run token:caducado` falla | Estás en otra carpeta: `cd docs/ejemplos/api-sorteos` |
 | `testrunner` no se encuentra | Ejecútalo desde la carpeta `bin` de ReadyAPI, o con su ruta completa |
 | La cabecera llega como `Bearer ${#TestCase#token}` literal | El nombre de la propiedad no coincide: tiene que llamarse exactamente `token`, en el caso de prueba |
+| Las aserciones JsonPath salen en gris (desactivadas) | La petición aún no tiene respuesta: ejecútala una vez (con el token ya guardado) y vuelve a añadir la aserción |
 | La candidata da los mismos resultados que la estable | Revisa que el endpoint apunta al **3001** |
 
 ## §12 · Cuestionario final
